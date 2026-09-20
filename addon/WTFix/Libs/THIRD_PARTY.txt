@@ -1,0 +1,25 @@
+WTFix embedded libraries
+
+LibStub
+Public domain. The vendored source retains its public-domain notice.
+
+CallbackHandler-1.0
+Ace3 Development Team.
+License: Ace3-style BSD.
+Full text: LICENSE-Ace3.txt
+
+LibDataBroker-1.1
+Author: tekkub
+Source: https://github.com/tekkub/libdatabroker-1-1
+The upstream WowAce project explicitly instructs addon authors to hard-embed
+LibDataBroker-1.1 in their addons. The project page currently labels the
+project "All Rights Reserved"; this notice preserves the source attribution
+and the library is distributed here only as the embedded runtime dependency
+the upstream project documents.
+
+LibDBIcon-1.0
+Project: LibDBIcon-1.0
+License: Ace3 Style BSD.
+Full text: LICENSE-Ace3.txt
+
+Vendored library source files remain separate under Libs/.

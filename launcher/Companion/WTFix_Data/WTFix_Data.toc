@@ -1,0 +1,10 @@
+## Interface: 16001
+## Title: WTFix preparation data
+## Notes: Launcher-owned recovery inputs. Keep enabled with WTFix.
+## X-WTFix-Bridge-Protocol: 1
+
+Begin.lua
+BootstrapData.lua
+Disk\WTFix_Bridge.lua
+Disk\WTFix.lua
+End.lua

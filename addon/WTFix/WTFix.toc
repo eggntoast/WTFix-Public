@@ -1,0 +1,29 @@
+## Interface: 16001
+## Title: |cffc9f3ffW|r|cffafeaffT|r|cff8ee1ffF|r|cff70d7ffi|r|cff50ccffx|r
+## Notes: SavedVariables recovery layer for WoW Forever
+## Author: NS
+## Version: 0.8.8
+## IconTexture: Interface\AddOns\WTFix\Media\Icon
+## SavedVariables: WTFIX_DB, WTFIX_SNAPSHOT_DB
+## LoadSavedVariablesFirst: 1
+## OptionalDeps: WTFix_Data
+## X-WTFix-Bridge-Protocol: 1
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+
+Import.lua
+Preparation.lua
+Core.lua
+Snapshot.lua
+Restore.lua
+Status.lua
+
+UI\Theme.lua
+UI\Components.lua
+UI\Dialogs.lua
+SettingsCompat.lua
+UI\Panel.lua
+Broker.lua
