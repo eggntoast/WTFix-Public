@@ -1,39 +1,169 @@
 # WTFix
 
-SavedVariables recovery for **World of Warcraft: Forever (Windows)**.
+### SavedVariables recovery for **World of Warcraft: Forever (Windows)**
 
-Save a trusted addon setup, restore it when needed, and keep that checkpoint through reloads and future logins. WTFix 0.8.8 supports addons declaring standard account or per-character SavedVariables. Coverage depends on the addon and the data it exposes.
+**Save the addon setup you trust. Restore it when something goes wrong. Keep it through reloads and future logins.**
 
-**Windows setup is required. Installing the addon alone does not prepare recovery.** Until preparation succeeds, WTFix shows **SETUP REQUIRED** and disables Save and Restore.
+![WTFix — Protect & Restore Addon Settings](https://media.forgecdn.net/attachments/1961/533/wtfix-snapshot-ready-png.png)
 
-## Choose your installation
+> WTFix creates an explicit trusted checkpoint of your addon SavedVariables and restores that checkpoint until **you** choose to replace it.
 
-| You want to… | Use |
+---
+
+## Download
+
+### GitHub — recommended for a complete installation
+
+**[Download WTFix 0.8.8](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.8.8)**
+
+| Package | Use |
 | --- | --- |
-| Install everything from GitHub | `WTFix-Full-0.8.8.zip` |
-| Prepare a compatible runtime installed through CurseForge | `WTFix-Launcher-0.8.8.zip` |
+| `WTFix-Full-0.8.8.zip` | **Recommended for a fresh installation.** Includes the addon runtime, launcher and preparation components. |
+| `WTFix-Launcher-0.8.8.zip` | For users who already have a compatible WTFix runtime installed. |
 
-GitHub offers the Full and Launcher ZIPs. The addon/runtime package is distributed through CurseForge. Use the named GitHub ZIPs from the public repository's Releases area when available. GitHub's automatic **Source code** downloads are developer source, not the ready-to-run Full installer.
+> Do **not** use GitHub's automatically generated **Source code** ZIP/TAR files as installation packages. Use the named WTFix downloads from the Releases page.
 
-Start with the [installation guide](docs/installation.md). Then read [Save, Restore and pending settings](docs/usage.md).
+The CurseForge addon/runtime release is currently pending approval.
 
-## How it works
+---
 
-With WoW closed, the launcher prepares a separate companion addon, backs up recovery inputs and opens Battle.net. Click Play there. The launcher is not a background service.
+## What WTFix does
 
-Keep both **WTFix** and **WTFix_Data** enabled. Once preparation is valid, ordinary reloads and cold starts can recover the checkpoint without another launcher run. Refresh preparation after relevant installation/account changes or when setup is required.
+WTFix is designed around one simple idea:
 
-The launcher preserves an already-installed compatible WTFix runtime. It does not upgrade or downgrade that runtime. See [preparation and ownership](docs/preparation.md).
+**save a known-good addon setup and keep it trusted until you explicitly save another one.**
 
-## Important boundaries
+It supports addons declaring standard:
 
-- Save Snapshot captures declared SavedVariables at the time you confirm it.
-- Later addon writes do not silently update the trusted checkpoint.
-- Restore discards unsaved changes for protected addons.
-- Some addons need their own Apply/Reload cycle before their pending settings can be captured. Follow the [six-step workflow](docs/usage.md#addons-with-pending-settings).
-- Deleting another addon's SavedVariables is not a normal WTFix workflow.
-- WTFix cannot repair an independent persistence failure inside another addon.
+- account-wide SavedVariables
+- per-character SavedVariables
+- combinations of both
 
-Use `/wtfix` to open the panel, `/wtfix status` for readiness and recovery details, and `/wtfix diff` to inspect differences.
+Coverage depends on what each addon actually stores in its declared SavedVariables.
 
-See [troubleshooting](docs/troubleshooting.md), [changes](CHANGELOG.md), and [licenses](docs/licenses.md).
+### Save
+
+**Save Current Settings → Save Snapshot → Reload Now**
+
+The selected addon settings become your trusted recovery checkpoint.
+
+### Restore
+
+**Restore Saved Settings → Prepare Restore → Reload Now**
+
+WTFix restores the trusted checkpoint and discards unsaved changes for protected addons.
+
+---
+
+## Windows preparation is required
+
+Installing the addon runtime alone does **not** prepare recovery.
+
+With WoW closed, run:
+
+`WTFix Launcher.cmd`
+
+The launcher prepares the recovery environment, verifies the disk bridge, backs up recovery inputs and opens Battle.net.
+
+Until preparation succeeds, WTFix clearly shows:
+
+> **SETUP REQUIRED**
+
+and keeps **Save** and **Restore** disabled.
+
+After successful preparation:
+
+- keep both **WTFix** and **WTFix_Data** enabled
+- normal `/reload` works
+- relogs and full client restarts work
+- the launcher does **not** remain running in the background
+- you do **not** need to run it before every WoW session
+
+See the full [installation guide](docs/installation.md).
+
+---
+
+## Addons with their own Apply / Reload button
+
+Some addons keep changed settings in private working state until their own **Apply** or **Reload** action writes those settings into SavedVariables.
+
+For those addons:
+
+1. Disable WTFix protection for that addon.
+2. Make the intended settings changes.
+3. Use the addon's own Reload/Apply mechanism.
+4. Verify the settings survived the reload.
+5. Re-enable WTFix protection.
+6. Explicitly **Save Snapshot** in WTFix.
+
+Re-enabling protection alone does **not** adopt the changed settings.
+
+**Save Snapshot** is the explicit action that makes the new state part of the trusted checkpoint.
+
+This is a generic workflow for addons that delay writing their settings. Deleting another addon's SavedVariables is **not** part of the normal WTFix workflow.
+
+See [Save, Restore and pending settings](docs/usage.md).
+
+---
+
+## Commands
+
+| Command | Purpose |
+| --- | --- |
+| `/wtfix` | Open the WTFix panel |
+| `/wtfix status` | Show preparation, checkpoint and recovery status |
+| `/wtfix diff` | Show SavedVariable paths that differ from the trusted checkpoint |
+
+A difference is not automatically a problem. Addons may update counters, caches, history and other session data after login.
+
+---
+
+## Recovery model
+
+WTFix deliberately does **not** silently trust later changes.
+
+- Save Snapshot captures declared SavedVariables when you explicitly save.
+- Later addon writes do not silently replace the trusted checkpoint.
+- Re-enabling protection does not automatically adopt changed data.
+- Restore returns protected addons to the saved checkpoint.
+- If preparation cannot be trusted, WTFix fails closed instead of pretending recovery is active.
+
+---
+
+## WTFix 0.8.8
+
+- Separates addon runtime ownership from launcher-owned preparation.
+- Preserves a compatible runtime installed through an addon manager.
+- Adds fail-closed **SETUP REQUIRED** behavior.
+- Supports the first snapshot immediately after valid preparation.
+- Enables Restore once a valid checkpoint exists.
+- Checks bridge compatibility independently of the WTFix product version.
+- Preserves recovery through Save/reload, ordinary reload, Restore, relogs and cold starts.
+- Provides separate Full and Launcher installation packages.
+
+See the full [changelog](CHANGELOG.md).
+
+---
+
+## Documentation
+
+- [Installation & setup](docs/installation.md)
+- [Save, Restore & pending settings](docs/usage.md)
+- [Preparation & ownership](docs/preparation.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Source layout](docs/source-layout.md)
+- [Licenses & third-party notices](docs/licenses.md)
+
+---
+
+## License
+
+WTFix is released under the **MIT License**.
+
+Bundled third-party components retain their respective licenses, copyrights and notices.
+
+---
+
+### Built for recovery, not guesswork.
+
+**Save a setup you trust. Keep control over when it changes. Restore it when you need it.**
