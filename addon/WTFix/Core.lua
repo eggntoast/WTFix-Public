@@ -1,6 +1,6 @@
 local addonName, ns = ...
 
-ns.version = "0.9.0"
+ns.version = "0.9.1"
 ns.author = "NS"
 ns.addonName = addonName
 ns.media = "Interface\\AddOns\\WTFix\\Media\\"
@@ -55,18 +55,20 @@ function ns.GetBootstrapCharacterRecord()
     local chars = bootstrap and bootstrap.fallback and bootstrap.fallback.characters
     if type(chars) ~= "table" then return nil end
 
-    local name = UnitName and UnitName("player") or ""
-    local realmID = GetRealmID and safeString(GetRealmID()) or ""
-    local realmName = GetRealmName and safeString(GetRealmName()) or ""
+    -- Preparation already established the only unique directory-backed name.
+    -- Reuse its exact tuple: Forever's native realm ID is not a directory ID.
+    -- This is consistency with selected preparation, not account verification.
+    local preparation = ns.GetPreparationState()
+    local character = preparation.ready and preparation.character
+    if type(character) ~= "table" then return nil end
+    local found
     for _, record in pairs(chars) do
-        if type(record) == "table" and record.characterName == name then
-            local folder = safeString(record.realmFolder)
-            if folder == realmID or ns.NormalizeRealm(folder) == ns.NormalizeRealm(realmName) then
-                return record
-            end
+        if type(record) == "table" and record.characterName == character.name and record.realmFolder == character.realm then
+            if found then return nil end -- never choose arbitrarily between duplicate records
+            found = record
         end
     end
-    return nil
+    return found
 end
 
 function ns.CountTargets()

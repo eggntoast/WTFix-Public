@@ -32,11 +32,10 @@ function ns.UI_CreateAboutPage(parent)
     local title = label("What's New in " .. ns.version, -92, T.fonts.section, false)
     title:SetTextColor(unpack(C.accentBright))
     local changes = {
-        "Safer snapshots when addons mix settings with temporary runtime values.",
-        "Improved compatibility with EllesmereUI and Prat chat history.",
-        "Byte-safe recovery preparation for binary addon data, including Questie.",
-        "Clearer coverage for protected addons that are installed but not loaded.",
-        "Better /wtfix check details to help diagnose capture and recovery issues.",
+        "More reliable recovery of character-specific settings on Forever.",
+        "Ambiguous character matches are never guessed.",
+        "Save checks that the complete checkpoint fits safe recovery limits.",
+        "Your previous checkpoint stays protected if capture cannot complete.",
     }
     for index, text in ipairs(changes) do
         local y = -126 - (index - 1) * 38

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.1
+
+- More reliable character-specific recovery when Forever's in-game character name and internal character-folder identity differ. Ambiguous matches are not guessed.
+- Save now validates the complete assembled checkpoint against recovery limits before replacing the previous trusted checkpoint. If validation fails, the previous checkpoint remains intact.
 ## 0.9.0
 
 - Safer snapshots for addons that mix settings with temporary runtime values, with compatibility improvements for EllesmereUI and Prat chat history.

@@ -295,7 +295,18 @@ function ns.SaveCurrentSettings()
     end
 
     candidate.captureOmissions = omissions -- bounded, data-only report for this Save
-    WTFIX_SNAPSHOT_DB = candidate
+    -- Individually copyable values can exceed restore bounds once combined
+    -- with the checkpoint envelope and retained stores. Validate exactly what
+    -- the strict disk restore will consume before replacing trusted authority.
+    local ok, committed, err, issue = ns.DeepCopy(candidate, "WTFIX_SNAPSHOT_DB")
+    if not ok then
+        issue = issue or {path="WTFIX_SNAPSHOT_DB",reason=tostring(err)}
+        issue.addon, issue.scope, issue.variable, issue.addonVersion = "WTFix", "checkpoint", "WTFIX_SNAPSHOT_DB", ns.version
+        failures[#failures + 1] = issue
+        warnings[#warnings + 1] = tostring(err)
+        return false, ns.lastSaveResult, "snapshot was not saved because the complete checkpoint exceeds safe restore limits: " .. tostring(err)
+    end
+    WTFIX_SNAPSHOT_DB = committed
     return true, ns.lastSaveResult
 end
 

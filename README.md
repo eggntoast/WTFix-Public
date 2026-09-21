@@ -14,12 +14,12 @@
 
 ### GitHub — recommended for a complete installation
 
-**[Download WTFix 0.9.0](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.0)**
+**[Download WTFix 0.9.1](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.1)**
 
 | Package | Use |
 | --- | --- |
-| `WTFix-Full-0.9.0.zip` | **Recommended for a fresh installation.** Includes the addon runtime, launcher and preparation components. |
-| `WTFix-Launcher-0.9.0.zip` | For users who already install the WTFix addon/runtime separately, including through CurseForge. |
+| `WTFix-Full-0.9.1.zip` | **Recommended for a fresh installation.** Includes the addon runtime, launcher and preparation components. |
+| `WTFix-Launcher-0.9.1.zip` | For users who already install the WTFix addon/runtime separately, including through CurseForge. |
 
 > Do **not** use GitHub's automatically generated **Source code** ZIP/TAR files as installation packages. Use the named WTFix downloads from the Releases page.
 
@@ -31,7 +31,7 @@ CurseForge distributes the addon/runtime separately. GitHub provides the Full an
 
 **Update both the WTFix addon and the launcher.**
 
-Then, with WoW completely closed, run the **0.9.0 launcher once** so WTFix regenerates preparation using the new byte-safe SavedVariables handling.
+Then, with WoW completely closed, run the **current launcher once** so WTFix regenerates preparation using the byte-safe SavedVariables handling introduced in 0.9.0.
 
 Updating only the addon leaves older generated bootstrap data in place.
 
@@ -95,6 +95,18 @@ See the full [installation guide](docs/installation.md).
 
 ---
 
+## WTFix 0.9.1
+
+What's new:
+
+- More reliable character-specific recovery when Forever's in-game character name and internal character-folder identity differ.
+- Ambiguous character-directory matches are not guessed.
+- Save validates the complete assembled checkpoint against recovery limits before replacing the previous trusted checkpoint.
+- If complete-checkpoint validation fails, the previous trusted checkpoint remains intact.
+
+This is a recovery-hardening release. **Bridge protocol 1 and snapshot schema 1 are unchanged.**
+
+---
 ## WTFix 0.9.0
 
 ![WTFix 0.9.0 — About](docs/images/wtfix-0.9.0-about.png)

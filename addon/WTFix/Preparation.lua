@@ -37,14 +37,17 @@ function ns.InitializePreparation()
         return reject("DISK", "The current snapshot file was not read. Run setup again.")
     end
     local name = UnitName and UnitName("player")
-    local matches = 0
+    local matches, matchedCharacter = 0, nil
     for _, character in pairs(p.characters) do
         if type(character) ~= "table" or type(character.name) ~= "string" or character.name == ""
             or type(character.realm) ~= "string" or character.realm == "" then
             return reject("METADATA", "The prepared character roster is invalid. Run setup again.")
         end
         if normalizeName(character.name) == "" then return reject("METADATA", "Invalid prepared character name. Run setup again.") end
-        if name and normalizeName(character.name) == normalizeName(name) then matches = matches + 1 end
+        if name and normalizeName(character.name) == normalizeName(name) then
+            matches = matches + 1
+            matchedCharacter = { realm = character.realm, name = character.name }
+        end
     end
     if matches ~= 1 then return reject("CHARACTER", "This character name is not uniquely prepared. Exit WoW and run the launcher for the correct account.") end
     local ok = pcall(p.bootstrap, ns)
@@ -68,7 +71,8 @@ function ns.InitializePreparation()
     ns.diskConfig, ns.diskSnapshot = p.diskConfig, p.diskSnapshot
     ns.diskReadObserved = true
     ns.diskSnapshotAtFileLoad = ns.DescribeSnapshot(p.diskSnapshot)
-    ns.preparation = { ready = true, code = "READY", reason = "Prepared character name matched (account not verified)", binding = "unique-character-name" }
+    ns.preparation = { ready = true, code = "READY", reason = "Prepared character name matched (account not verified)",
+        binding = "unique-character-name", character = matchedCharacter }
     return ns.preparation
 end
 

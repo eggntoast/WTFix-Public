@@ -17,7 +17,7 @@ The CurseForge addon ZIP contains `WTFix/` at its root.
 
 GitHub distributes the Full and Launcher ZIPs.
 
-Product version: **0.9.0**
+Product version: **0.9.1**
 
 Bridge protocol: **1**
 

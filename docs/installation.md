@@ -1,12 +1,12 @@
 # Installation and setup
 
-WTFix 0.9.0 is for WoW Forever on Windows. The Windows launcher and the in-game runtime are both needed for prepared recovery.
+WTFix 0.9.1 is for WoW Forever on Windows. The Windows launcher and the in-game runtime are both needed for prepared recovery.
 
 Before installation or an upgrade, close WoW and keep an independent backup of your WTF account data. Setup also creates a verified recovery-input archive, but this is not a continuous backup of every subsequent change.
 
 ## Route A: install everything from GitHub
 
-1. Download `WTFix-Full-0.9.0.zip` from the current GitHub release.
+1. Download `WTFix-Full-0.9.1.zip` from the current GitHub release.
 2. Extract the entire ZIP into a normal folder outside WoW's AddOns directory. Keep all extracted files together; do not run directly inside the ZIP.
 3. With WoW closed, run `WTFix Launcher.cmd`.
 4. Confirm the correct Forever installation and account when prompted. If no account/character folder exists yet, log into that character once, exit WoW, and run setup again.
@@ -19,7 +19,7 @@ Full installs the runtime only when `Interface/AddOns/WTFix` is absent. It prese
 ## Route B: CurseForge addon plus Launcher
 
 1. Install or update the WTFix runtime through CurseForge.
-2. Download and fully extract `WTFix-Launcher-0.9.0.zip` from GitHub.
+2. Download and fully extract `WTFix-Launcher-0.9.1.zip` from GitHub.
 3. Close WoW.
 4. Run `WTFix Launcher.cmd`.
 5. Require successful backup and disk-bridge preparation.
@@ -29,16 +29,16 @@ The Launcher package contains no runtime. Installing the CurseForge addon by its
 
 ## Updating from 0.8.8
 
-WTFix 0.9.0 changes both the runtime and launcher.
+If you are updating directly from 0.8.8, update both the WTFix runtime and launcher.
 
-1. Update or install the 0.9.0 WTFix runtime.
-2. Replace the old launcher files with the 0.9.0 launcher.
+1. Update or install the current 0.9.1 WTFix runtime.
+2. Replace the old launcher files with the current 0.9.1 launcher.
 3. Close WoW completely.
-4. Run the 0.9.0 `WTFix Launcher.cmd` once.
+4. Run the current `WTFix Launcher.cmd` once.
 5. Require successful preparation.
 6. Start WoW normally.
 
-This launcher rerun is required because 0.9.0 changes how SavedVariables source is embedded into generated recovery preparation.
+This launcher rerun is required when coming from 0.8.8 because 0.9.0 introduced byte-safe SavedVariables preparation.
 
 Older launchers could transcode binary or non-UTF-8 SavedVariables data. 0.9.0 reads raw bytes and preserves them without text-encoding conversion.
 

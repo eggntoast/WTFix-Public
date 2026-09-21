@@ -25,7 +25,7 @@ Binary and non-UTF-8 string data is embedded without character-set transcoding. 
 
 An optional UTF-8 BOM is accepted. UTF-16 source is rejected rather than silently transcoded.
 
-When updating from 0.8.8, run the 0.9.0 launcher once with WoW closed so preparation is regenerated.
+When updating from 0.8.8, run the current launcher once with WoW closed so preparation is regenerated.
 
 This prevents new corruption. It cannot reconstruct data already corrupted by an older generated preparation.
 

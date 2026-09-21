@@ -1,6 +1,6 @@
 @echo off
 setlocal
-title WTFix 0.9.0 - uninstall
+title WTFix 0.9.1 - uninstall
 color 07
 cls
 
@@ -14,7 +14,7 @@ set "RESET=%ESC%[0m"
 set "WTFIX_EXIT=0"
 
 echo.
-echo %CYAN%  WTFix 0.9.0%RESET%
+echo %CYAN%  WTFix 0.9.1%RESET%
 echo %DIM%  uninstall%RESET%
 echo %DIM%  ---------%RESET%
 echo.
@@ -42,7 +42,7 @@ if "%WTFIX_EXIT%"=="0" (
 
 :footer
 echo.
-echo %DIM%  WTFix 0.9.0 ^| NS%RESET%
+echo %DIM%  WTFix 0.9.1 ^| NS%RESET%
 echo %DIM%  you can safely close this window, or press any key to exit.%RESET%
 pause >nul
 exit /b %WTFIX_EXIT%

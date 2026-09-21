@@ -52,7 +52,7 @@ When upgrading from 0.8.8:
 1. update the runtime
 2. update the launcher
 3. close WoW
-4. run the 0.9.0 launcher once
+4. run the current launcher once
 
 Updating only the addon does not regenerate old bootstrap preparation.
 

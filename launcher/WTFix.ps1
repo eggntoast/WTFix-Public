@@ -9,7 +9,7 @@ param(
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = "Stop"
 
-$WTFixVersion = "0.9.0"
+$WTFixVersion = "0.9.1"
 $ScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $StateRoot = Join-Path $env:LOCALAPPDATA "WTFix"
 $ConfigPath = Join-Path $StateRoot "config.json"
