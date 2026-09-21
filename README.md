@@ -27,15 +27,25 @@ CurseForge distributes the addon/runtime separately. GitHub provides the Full an
 
 ---
 
-## Important: updating from 0.8.8
+## Updating
 
-**Update both the WTFix addon and the launcher.**
+### From 0.9.0
+
+**Update both the WTFix addon/runtime and launcher so the installed components stay on the same release.**
+
+If your existing preparation is healthy, 0.9.1 does not require preparation to be regenerated solely because of this patch.
+
+Run the launcher again with WoW closed after adding characters, changing the selected installation/account, updating managed addons, or if WTFix shows **SETUP REQUIRED**.
+
+### From 0.8.8
+
+**Update both the WTFix addon/runtime and launcher.**
 
 Then, with WoW completely closed, run the **current launcher once** so WTFix regenerates preparation using the byte-safe SavedVariables handling introduced in 0.9.0.
 
 Updating only the addon leaves older generated bootstrap data in place.
 
-WTFix 0.9.0 prevents new byte/encoding corruption in binary or non-UTF-8 SavedVariables data. It cannot reconstruct data that was already corrupted by an older preparation. Preserve known-good backups if you suspect an earlier launcher affected your settings.
+The byte-safe preparation prevents new encoding corruption in binary or non-UTF-8 SavedVariables data. It cannot reconstruct data that was already corrupted by an older preparation. Preserve known-good backups if recovery may be required.
 
 ---
 
