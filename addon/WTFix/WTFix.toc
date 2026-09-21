@@ -2,7 +2,7 @@
 ## Title: |cffc9f3ffW|r|cffafeaffT|r|cff8ee1ffF|r|cff70d7ffi|r|cff50ccffx|r
 ## Notes: SavedVariables recovery layer for WoW Forever
 ## Author: NS
-## Version: 0.8.8
+## Version: 0.9.0
 ## IconTexture: Interface\AddOns\WTFix\Media\Icon
 ## SavedVariables: WTFIX_DB, WTFIX_SNAPSHOT_DB
 ## LoadSavedVariablesFirst: 1
@@ -25,5 +25,6 @@ UI\Theme.lua
 UI\Components.lua
 UI\Dialogs.lua
 SettingsCompat.lua
+UI\About.lua
 UI\Panel.lua
 Broker.lua

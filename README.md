@@ -4,7 +4,7 @@
 
 **Save the addon setup you trust. Restore it when something goes wrong. Keep it through reloads and future logins.**
 
-![WTFix — Protect & Restore Addon Settings](https://media.forgecdn.net/attachments/1961/533/wtfix-snapshot-ready-png.png)
+![WTFix 0.9.0 — Recovery](docs/images/wtfix-0.9.0-recovery.png)
 
 > WTFix creates an explicit trusted checkpoint of your addon SavedVariables and restores that checkpoint until **you** choose to replace it.
 
@@ -14,16 +14,28 @@
 
 ### GitHub — recommended for a complete installation
 
-**[Download WTFix 0.8.8](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.8.8)**
+**[Download WTFix 0.9.0](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.0)**
 
 | Package | Use |
 | --- | --- |
-| `WTFix-Full-0.8.8.zip` | **Recommended for a fresh installation.** Includes the addon runtime, launcher and preparation components. |
-| `WTFix-Launcher-0.8.8.zip` | For users who already have a compatible WTFix runtime installed. |
+| `WTFix-Full-0.9.0.zip` | **Recommended for a fresh installation.** Includes the addon runtime, launcher and preparation components. |
+| `WTFix-Launcher-0.9.0.zip` | For users who already install the WTFix addon/runtime separately, including through CurseForge. |
 
 > Do **not** use GitHub's automatically generated **Source code** ZIP/TAR files as installation packages. Use the named WTFix downloads from the Releases page.
 
-The CurseForge addon/runtime release is currently pending approval.
+CurseForge distributes the addon/runtime separately. GitHub provides the Full and Launcher packages.
+
+---
+
+## Important: updating from 0.8.8
+
+**Update both the WTFix addon and the launcher.**
+
+Then, with WoW completely closed, run the **0.9.0 launcher once** so WTFix regenerates preparation using the new byte-safe SavedVariables handling.
+
+Updating only the addon leaves older generated bootstrap data in place.
+
+WTFix 0.9.0 prevents new byte/encoding corruption in binary or non-UTF-8 SavedVariables data. It cannot reconstruct data that was already corrupted by an older preparation. Preserve known-good backups if you suspect an earlier launcher affected your settings.
 
 ---
 
@@ -83,6 +95,49 @@ See the full [installation guide](docs/installation.md).
 
 ---
 
+## WTFix 0.9.0
+
+![WTFix 0.9.0 — About](docs/images/wtfix-0.9.0-about.png)
+
+What's new:
+
+- Safer snapshots when addons mix persistent settings with temporary runtime-only values.
+- Compatibility improvements for **EllesmereUI** and **Prat** chat history.
+- Byte-safe recovery preparation for binary and non-UTF-8 SavedVariables data, including **Questie-style binary stores**.
+- Installed protected addons that are not currently loaded now show **Not loaded** instead of incorrectly reducing active recovery coverage.
+- Improved `/wtfix check` diagnostics.
+- New **Recovery** and **About** tabs with current changes and a copyable bug-report link.
+
+See the full [changelog](CHANGELOG.md).
+
+---
+
+## Addons with runtime-only values
+
+Some addons place runtime objects or methods inside tables that also contain persistent settings.
+
+WTFix 0.9.0 captures the persistable scalar/table data while omitting nested runtime-only `function`, `userdata` and `thread` values.
+
+Those omissions are reported rather than silently hidden.
+
+Unsupported roots, unsafe keys, cycles and other structural failures still block Save instead of replacing the trusted checkpoint with incomplete data.
+
+---
+
+## Installed but not loaded addons
+
+An installed protected addon can be disabled, unavailable for the current game type or waiting to load on demand.
+
+WTFix now reports these as:
+
+> **Not loaded**
+
+They do not count as active missing recovery coverage merely because their globals are unavailable while the addon is not running.
+
+Existing checkpoint/fallback data is retained.
+
+---
+
 ## Addons with their own Apply / Reload button
 
 Some addons keep changed settings in private working state until their own **Apply** or **Reload** action writes those settings into SavedVariables.
@@ -98,9 +153,7 @@ For those addons:
 
 Re-enabling protection alone does **not** adopt the changed settings.
 
-**Save Snapshot** is the explicit action that makes the new state part of the trusted checkpoint.
-
-This is a generic workflow for addons that delay writing their settings. Deleting another addon's SavedVariables is **not** part of the normal WTFix workflow.
+Deleting another addon's SavedVariables is **not** part of the normal WTFix workflow.
 
 See [Save, Restore and pending settings](docs/usage.md).
 
@@ -113,8 +166,33 @@ See [Save, Restore and pending settings](docs/usage.md).
 | `/wtfix` | Open the WTFix panel |
 | `/wtfix status` | Show preparation, checkpoint and recovery status |
 | `/wtfix diff` | Show SavedVariable paths that differ from the trusted checkpoint |
+| `/wtfix check` | Diagnose current capture compatibility and recovery-input coverage without saving or restoring |
 
 A difference is not automatically a problem. Addons may update counters, caches, history and other session data after login.
+
+`/wtfix check` does **not** Save, Restore, reload, or adopt a new checkpoint.
+
+---
+
+## Reporting a bug
+
+Open:
+
+**`/wtfix → About → Report a Bug`**
+
+or visit:
+
+**https://github.com/eggntoast/WTFix-Public/issues**
+
+Include:
+
+- WTFix version
+- affected addon and version
+- `/wtfix status`
+- for Save/capture problems, `/wtfix check`
+- the exact steps that led to the problem
+
+Review logs and SavedVariables before posting them publicly; they may contain personal data.
 
 ---
 
@@ -127,21 +205,6 @@ WTFix deliberately does **not** silently trust later changes.
 - Re-enabling protection does not automatically adopt changed data.
 - Restore returns protected addons to the saved checkpoint.
 - If preparation cannot be trusted, WTFix fails closed instead of pretending recovery is active.
-
----
-
-## WTFix 0.8.8
-
-- Separates addon runtime ownership from launcher-owned preparation.
-- Preserves a compatible runtime installed through an addon manager.
-- Adds fail-closed **SETUP REQUIRED** behavior.
-- Supports the first snapshot immediately after valid preparation.
-- Enables Restore once a valid checkpoint exists.
-- Checks bridge compatibility independently of the WTFix product version.
-- Preserves recovery through Save/reload, ordinary reload, Restore, relogs and cold starts.
-- Provides separate Full and Launcher installation packages.
-
-See the full [changelog](CHANGELOG.md).
 
 ---
 

@@ -51,7 +51,9 @@ local function restoreProtectedState()
         snapshotGeneration = snapshot and (tonumber(snapshot.generation) or 0) or 0,
         snapshotVariables = 0,
         fallbackVariables = 0,
+        fallbackDetails = {},
         missingVariables = 0,
+        missingDetails = {},
         warnings = {},
         protectedAddons = 0,
         launcherDetected = bootstrap.generated == true,
@@ -69,8 +71,8 @@ local function restoreProtectedState()
             local fallCharacter = type(fallbackCharacter[addon]) == "table" and fallbackCharacter[addon] or nil
 
             local scopes = {
-                { names = target.account, snapshot = snapAccount, fallback = fallAccount },
-                { names = target.character, snapshot = snapCharacter, fallback = fallCharacter },
+                { name = "account", names = target.account, snapshot = snapAccount, fallback = fallAccount },
+                { name = "character", names = target.character, snapshot = snapCharacter, fallback = fallCharacter },
             }
 
             for _, scope in ipairs(scopes) do
@@ -87,11 +89,16 @@ local function restoreProtectedState()
                         local ok, err = rawFallback(scope.fallback, variableName)
                         if ok then
                             stats.fallbackVariables = stats.fallbackVariables + 1
+                            stats.fallbackDetails[#stats.fallbackDetails + 1] = { addon=addon, scope=scope.name, variable=variableName }
                         else
                             if err then
                                 stats.warnings[#stats.warnings + 1] = addon .. ": " .. variableName .. " (" .. tostring(err) .. ")"
                             end
                             stats.missingVariables = stats.missingVariables + 1
+                            stats.missingDetails[#stats.missingDetails + 1] = {
+                                addon = addon, scope = scope.name, variable = variableName,
+                                reason = err or "no snapshot entry or usable bootstrap fallback at recovery",
+                            }
                         end
                     end
                 end

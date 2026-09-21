@@ -1,14 +1,26 @@
 # Source layout
 
-The public layout separates editable runtime and launcher source:
+The public layout separates runtime and launcher source:
 
-- `addon/WTFix/`: runtime files, including embedded-library notices.
-- `launcher/`: unchanged Windows entry points and PowerShell scripts.
-- `launcher/Companion/WTFix_Data/`: unchanged companion template.
-- `docs/`, README, CHANGELOG and LICENSE: user and distribution documentation.
+- `addon/WTFix/`: runtime files, embedded libraries and runtime media.
+- `launcher/`: Windows entry points and PowerShell launcher source.
+- `launcher/Companion/WTFix_Data/`: launcher-owned companion template.
+- `docs/`, README, CHANGELOG and LICENSE: public documentation.
 
-This is a source export. Use packaged downloads for installation.
+This repository is a source export. Use packaged downloads from GitHub Releases or CurseForge for installation.
 
-Full packaging places the runtime at `AddOn/WTFix/` beside the launcher scripts, and the companion at `Companion/WTFix_Data/`. Launcher-only uses the same layout with no AddOn payload. The CurseForge addon ZIP has `WTFix/` at its root. GitHub distributes only Full and Launcher ZIPs. These paths are required by the unchanged 0.8.8 scripts; do not assume the curated source tree is itself a Full installation.
+Full packaging places the runtime at `AddOn/WTFix/` beside launcher scripts and the companion at `Companion/WTFix_Data/`.
 
-Product version: 0.8.8. Bridge protocol: 1. See export-manifest.json for the implementation commit and per-file SHA256 mapping. Generated data, junctions, user settings, development evidence and old packages are not source-export inputs.
+Launcher-only uses the same launcher/companion layout with no runtime payload.
+
+The CurseForge addon ZIP contains `WTFix/` at its root.
+
+GitHub distributes the Full and Launcher ZIPs.
+
+Product version: **0.9.0**
+
+Bridge protocol: **1**
+
+See `export-manifest.json` for the private implementation authority commit and per-file SHA256 mapping.
+
+Generated player data, directory junctions, private development tests, recovery history and local build packages are not public source-export inputs.

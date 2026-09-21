@@ -1,6 +1,6 @@
 @echo off
 setlocal
-title WTFix 0.8.8 - change WoW location
+title WTFix 0.9.0 - change WoW location
 color 07
 cls
 
@@ -13,7 +13,7 @@ set "DIM=%ESC%[90m"
 set "RESET=%ESC%[0m"
 
 echo.
-echo %CYAN%  WTFix 0.8.8%RESET%
+echo %CYAN%  WTFix 0.9.0%RESET%
 echo %DIM%  change WoW location%RESET%
 echo %DIM%  -------------------%RESET%
 echo.
@@ -33,7 +33,7 @@ if "%WTFIX_EXIT%"=="0" (
 )
 
 echo.
-echo %DIM%  WTFix 0.8.8 ^| NS%RESET%
+echo %DIM%  WTFix 0.9.0 ^| NS%RESET%
 echo %DIM%  you can safely close this window, or press any key to exit.%RESET%
 pause >nul
 exit /b %WTFIX_EXIT%

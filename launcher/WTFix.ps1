@@ -9,7 +9,7 @@ param(
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = "Stop"
 
-$WTFixVersion = "0.8.8"
+$WTFixVersion = "0.9.0"
 $ScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $StateRoot = Join-Path $env:LOCALAPPDATA "WTFix"
 $ConfigPath = Join-Path $StateRoot "config.json"
@@ -789,10 +789,23 @@ function ConvertTo-LuaString {
     return '"' + $escaped + '"'
 }
 
-function Read-LuaFileText {
-    param([string]$Path)
-    $info = Get-TextInfo $Path
-    return $info.Text
+function ConvertTo-LuaByteString {
+    param([byte[]]$Bytes)
+    # SavedVariables are Lua byte streams, not text in the Windows code page.
+    # Encode the OUTER Lua literal only. The runtime receives the original source
+    # bytes and its data-only parser then reads the INNER SavedVariables literals.
+    # Three decimal digits prevent a following ASCII digit extending an escape.
+    $escaped = New-Object 'string[]' 256
+    for ($i = 0; $i -lt 256; $i++) {
+        $escaped[$i] = if ($i -ge 32 -and $i -le 126 -and $i -ne 34 -and $i -ne 92) {
+            [string][char]$i
+        } else { '\' + $i.ToString('D3', [Globalization.CultureInfo]::InvariantCulture) }
+    }
+    $literal = New-Object System.Text.StringBuilder
+    [void]$literal.Append('"')
+    foreach ($byte in $Bytes) { [void]$literal.Append($escaped[$byte]) }
+    [void]$literal.Append('"')
+    return $literal.ToString()
 }
 
 function Backup-RecoveryInputs {
@@ -842,7 +855,7 @@ function Add-PrivateSavedVariablesBlock {
 
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $false }
 
-    $source = ConvertTo-LuaString (Read-LuaFileText $Path)
+    $source = ConvertTo-LuaByteString ([System.IO.File]::ReadAllBytes($Path))
     $label = ConvertTo-LuaString ([System.IO.Path]::GetFileName($Path))
     [void]$Builder.AppendLine("do")
     [void]$Builder.AppendLine("  local __wtfix_env, __wtfix_error = ns.ReadSavedVariables($source)")

@@ -2,28 +2,122 @@
 
 ## SETUP REQUIRED
 
-Close WoW and run the current compatible launcher for the correct installation/account. Keep WTFix_Data enabled. Check the exact preparation reason in `/wtfix status`. Do not bypass the gate or treat addon installation alone as successful setup.
+Close WoW and run the current compatible launcher for the correct installation/account.
 
-If no character folders exist, log into the character once, exit, then prepare. If character names are ambiguous or the wrong account was prepared, review account selection instead of assuming the check authenticates your login.
+Keep WTFix_Data enabled.
+
+Check the exact reason with:
+
+`/wtfix status`
+
+Do not bypass the setup gate or assume addon installation alone means recovery is prepared.
+
+## Save fails
+
+Run:
+
+`/wtfix check`
+
+This checks currently loaded protected SavedVariables using the same persistable-data projection used by Save.
+
+It does **not** Save, Restore, reload, advance the checkpoint or adopt current settings.
+
+The output can identify:
+
+- addon and version
+- account or character scope
+- SavedVariable name
+- failing path
+- failure reason
+- runtime-only values that will be omitted
+- missing recovery inputs
+- protected addons that are not currently loaded
+
+When reporting a problem, include the complete `/wtfix check` output and exact addon version.
+
+## Runtime-only values
+
+WTFix 0.9.0 can omit nested runtime-only `function`, `userdata` and `thread` values while retaining ordinary persistent scalar/table data.
+
+These omissions are reported.
+
+Unsupported roots, unsafe keys, cycles and structural/resource failures still block Save.
+
+## Binary or non-UTF-8 SavedVariables
+
+0.9.0 fixes an older launcher behavior that could transcode binary or non-UTF-8 SavedVariables source.
+
+When upgrading from 0.8.8:
+
+1. update the runtime
+2. update the launcher
+3. close WoW
+4. run the 0.9.0 launcher once
+
+Updating only the addon does not regenerate old bootstrap preparation.
+
+0.9.0 prevents new encoding corruption. It cannot reconstruct already-corrupted data. Preserve known-good backups.
+
+## Installed addon shows Not loaded
+
+This means WTFix knows about the protected addon but it is not currently loaded.
+
+It may be disabled, unavailable for the current game type or waiting to load on demand.
+
+Existing checkpoint/fallback data is retained.
+
+This condition does not by itself count as active missing recovery coverage.
 
 ## Missing runtime or incompatible version
 
-Launcher-only does not include the runtime. Install it through an available addon package or use Full for a missing installation. Existing runtimes are never replaced by Full; update an incompatible runtime separately and rerun setup. See the [migration guide](installation.md#upgrading-from-087-or-earlier) for old in-runtime bridges.
+Launcher-only does not include the runtime.
+
+Install the runtime through CurseForge or manual installation, or use Full when the runtime is absent.
+
+Existing compatible runtimes are not replaced by ordinary launcher preparation.
 
 ## Preparation fails
 
-Read the launcher error and `%LOCALAPPDATA%\WTFix\WTFix-last.log`. Confirm the location and that WoW is closed. Use Change WoW Location.cmd if needed. Do not delete snapshots, force-remove junctions, disable security controls or blindly elevate privileges to suppress an error. Keep existing backups.
+Read the launcher error and:
+
+`%LOCALAPPDATA%\WTFix\WTFix-last.log`
+
+Confirm the WoW location and that WoW is closed.
+
+Use `Change WoW Location.cmd` if necessary.
+
+Do not delete snapshots or SavedVariables simply to suppress an error.
 
 ## Settings revert
 
-Ordinary protected reloads deliberately restore the saved checkpoint. Save a new checkpoint to keep intended changes. For edits committed only during the addon's own Apply/Reload, use the [pending-settings workflow](usage.md#addons-with-pending-settings).
+Protected ordinary reloads deliberately restore the trusted checkpoint.
 
-If the addon cannot persist its own settings while excluded, that failure must be resolved independently. Do not delete its SavedVariables as a routine WTFix step.
+Use Save Snapshot when you intentionally want to adopt a new configuration.
+
+For addons that commit settings only through their own Apply/Reload workflow, see the [usage guide](usage.md).
 
 ## Live data differs immediately after login
 
-This can be counters, caches or session history. Inspect `/wtfix diff`; a differing path alone does not prove failed recovery. Compare the intended setting and checkpoint generation.
+This can be counters, caches or session history.
+
+Inspect:
+
+`/wtfix diff`
+
+A differing path does not automatically mean recovery failed.
 
 ## Getting help
 
-Provide WTFix and launcher versions, the preparation reason, recovery source, snapshot generation, the affected addon/version and exact steps. Include whether the addon persists correctly while excluded. Never post full SavedVariables, recovery archives or logs without reviewing and removing personal data.
+Open `/wtfix → About → Report a Bug` or visit:
+
+https://github.com/eggntoast/WTFix-Public/issues
+
+Include:
+
+- WTFix version
+- affected addon and version
+- `/wtfix status`
+- `/wtfix check` for Save/capture issues
+- exact reproduction steps
+
+Never post full SavedVariables, recovery archives or logs without reviewing them for personal information first.

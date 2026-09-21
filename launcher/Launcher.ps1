@@ -3,7 +3,7 @@ param()
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
-$version = '0.8.8'
+$version = '0.9.0'
 $Host.UI.RawUI.WindowTitle = "WTFix $version"
 
 Write-Host ''

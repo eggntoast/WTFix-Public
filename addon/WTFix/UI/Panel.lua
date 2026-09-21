@@ -35,7 +35,7 @@ local subtitle = ns.UI_CreateLabel(header, "SavedVariables recovery", true, T.fo
 subtitle:SetPoint("TOPLEFT", wordmark, "BOTTOMLEFT", 2, 2)
 subtitle:SetPoint("RIGHT", header, "RIGHT", -190, 0)
 
-local versionMeta = ns.UI_CreateLabel(header, "WTFix " .. ns.version .. "  |  NS", true, T.fonts.bodySmall)
+local versionMeta = ns.UI_CreateLabel(header, "WTFix " .. ns.version .. "  ·  NS", true, T.fonts.bodySmall)
 versionMeta:SetPoint("TOPRIGHT", 0, -12)
 versionMeta:SetWidth(170)
 versionMeta:SetJustifyH("RIGHT")
@@ -54,12 +54,52 @@ headerLine:SetPoint("BOTTOMRIGHT")
 headerLine:SetHeight(1)
 T.SetColorTexture(headerLine, C.border)
 
+local tabBar = CreateFrame("Frame", nil, root)
+tabBar:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, -M.gap)
+tabBar:SetPoint("TOPRIGHT", header, "BOTTOMRIGHT", 0, -M.gap)
+tabBar:SetHeight(30)
+
+local content = CreateFrame("Frame", nil, root)
+content:SetPoint("TOPLEFT", tabBar, "BOTTOMLEFT", 0, -M.gap)
+content:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT")
+local recoveryPage = CreateFrame("Frame", nil, content)
+recoveryPage:SetAllPoints()
+local aboutPage = ns.UI_CreateAboutPage(content)
+aboutPage:SetAllPoints()
+
+local recoveryTab = ns.UI_CreateButton(tabBar, "Recovery", 116, "secondary")
+recoveryTab:SetPoint("TOPLEFT")
+recoveryTab:SetHeight(30)
+local aboutTab = ns.UI_CreateButton(tabBar, "About", 92, "secondary")
+aboutTab:SetPoint("LEFT", recoveryTab, "RIGHT", 8, 0)
+aboutTab:SetHeight(30)
+local function indicator(button)
+    local line = button:CreateTexture(nil, "OVERLAY")
+    line:SetPoint("BOTTOMLEFT", 1, 0)
+    line:SetPoint("BOTTOMRIGHT", -1, 0)
+    line:SetHeight(2)
+    T.SetColorTexture(line, C.accent)
+    return line
+end
+local recoveryIndicator, aboutIndicator = indicator(recoveryTab), indicator(aboutTab)
+function panel:SelectTab(name)
+    local about = name == "About"
+    self.selectedTab = about and "About" or "Recovery"
+    recoveryPage:SetShown(not about)
+    aboutPage:SetShown(about)
+    recoveryIndicator:SetShown(not about)
+    aboutIndicator:SetShown(about)
+end
+recoveryTab:SetScript("OnClick", function() panel:SelectTab("Recovery") end)
+aboutTab:SetScript("OnClick", function() panel:SelectTab("About") end)
+panel:SelectTab("Recovery")
+
 local rightWidth = 232
 local topHeight = 156
 
-local statusCard = ns.UI_CreateCard(root, topHeight, false, false)
-statusCard:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 0, -M.gap)
-statusCard:SetPoint("RIGHT", root, "RIGHT", -(rightWidth + M.gap), 0)
+local statusCard = ns.UI_CreateCard(recoveryPage, topHeight, false, false)
+statusCard:SetPoint("TOPLEFT")
+statusCard:SetPoint("RIGHT", recoveryPage, "RIGHT", -(rightWidth + M.gap), 0)
 
 local statusTitle = ns.UI_CreateSectionTitle(statusCard, "Status")
 statusTitle:SetPoint("TOPLEFT", 16, -14)
@@ -83,9 +123,9 @@ addStatusRow("saved", "Last saved", -82)
 addStatusRow("character", "Current character", -103)
 addStatusRow("cold", "Cold-start recovery", -124)
 
-local actionCard = ns.UI_CreateCard(root, topHeight, true, true)
+local actionCard = ns.UI_CreateCard(recoveryPage, topHeight, true, true)
 actionCard:SetPoint("TOPLEFT", statusCard, "TOPRIGHT", M.gap, 0)
-actionCard:SetPoint("TOPRIGHT", root, "TOPRIGHT", 0, -(M.headerHeight + M.gap))
+actionCard:SetPoint("TOPRIGHT", recoveryPage, "TOPRIGHT", 0, 0)
 
 local actionTitle = ns.UI_CreateSectionTitle(actionCard, "Recovery Snapshot")
 actionTitle:SetPoint("TOPLEFT", 14, -14)
@@ -108,16 +148,16 @@ local restoreButton = ns.UI_CreateActionButton(
 restoreButton:SetPoint("TOPLEFT", saveButton, "BOTTOMLEFT", 0, -8)
 restoreButton:SetPoint("TOPRIGHT", saveButton, "BOTTOMRIGHT", 0, -8)
 
-local detailsCard = ns.UI_CreateCard(root, nil, false, false)
+local detailsCard = ns.UI_CreateCard(recoveryPage, nil, false, false)
 detailsCard:SetPoint("TOPLEFT", statusCard, "BOTTOMLEFT", 0, -M.gap)
-detailsCard:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -(rightWidth + M.gap), 0)
+detailsCard:SetPoint("BOTTOMRIGHT", recoveryPage, "BOTTOMRIGHT", -(rightWidth + M.gap), 0)
 
 local detailsTitle = ns.UI_CreateSectionTitle(detailsCard, "Protected Addons")
 detailsTitle:SetPoint("TOPLEFT", 16, -14)
 
 local detailsSub = ns.UI_CreateLabel(
     detailsCard,
-    "Saved means a checkpoint exists, not that live data is identical. Use /wtfix diff to inspect differences.",
+    "Saved means a checkpoint exists. Not loaded addons are not captured; existing data is retained. /wtfix diff compares live settings.",
     true,
     T.fonts.bodySmall
 )
@@ -152,9 +192,9 @@ local rowsFrame = rowsScroll.child
 
 local detailRows = {}
 
-local optionsCard = ns.UI_CreateCard(root, 132, true, false)
+local optionsCard = ns.UI_CreateCard(recoveryPage, 132, true, false)
 optionsCard:SetPoint("TOPLEFT", actionCard, "BOTTOMLEFT", 0, -M.gap)
-optionsCard:SetPoint("TOPRIGHT", root, "TOPRIGHT", 0, -(M.headerHeight + topHeight + (M.gap * 2)))
+optionsCard:SetPoint("TOPRIGHT", recoveryPage, "TOPRIGHT", 0, -(topHeight + M.gap))
 
 local optionsTitle = ns.UI_CreateSectionTitle(optionsCard, "Options")
 optionsTitle:SetPoint("TOPLEFT", 14, -14)
@@ -171,67 +211,7 @@ local chatToggle = ns.UI_CreateToggle(
 )
 chatToggle:SetPoint("TOPLEFT", minimapToggle, "BOTTOMLEFT", 0, -5)
 
-local aboutCard = ns.UI_CreateCard(root, nil, false, false)
-aboutCard:SetPoint("TOPLEFT", optionsCard, "BOTTOMLEFT", 0, -M.gap)
-aboutCard:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", 0, 0)
-
-local aboutTitle = ns.UI_CreateSectionTitle(aboutCard, "About")
-aboutTitle:SetPoint("TOPLEFT", 14, -14)
-
-local aboutVersion = ns.UI_CreateLabel(aboutCard, "WTFix " .. ns.version, false, T.fonts.section)
-aboutVersion:SetPoint("TOPLEFT", 14, -40)
-aboutVersion:SetPoint("RIGHT", -14, 0)
-
-local aboutSubtitle = ns.UI_CreateLabel(aboutCard, "SavedVariables recovery for WoW Forever", true, T.fonts.bodySmall)
-aboutSubtitle:SetPoint("TOPLEFT", aboutVersion, "BOTTOMLEFT", 0, -4)
-aboutSubtitle:SetPoint("RIGHT", -14, 0)
-aboutSubtitle:SetHeight(30)
-aboutSubtitle:SetJustifyV("TOP")
-aboutSubtitle:SetWordWrap(true)
-
-local aboutBody = ns.UI_CreateLabel(
-    aboutCard,
-    "Protect a trusted setup and keep restoring it until you save a new one.",
-    true,
-    T.fonts.bodySmall
-)
-aboutBody:SetPoint("TOPLEFT", aboutSubtitle, "BOTTOMLEFT", 0, -8)
-aboutBody:SetPoint("RIGHT", -14, 0)
-aboutBody:SetHeight(38)
-aboutBody:SetJustifyV("TOP")
-aboutBody:SetWordWrap(true)
-
-local aboutAuthor = ns.UI_CreateLabel(aboutCard, "by NS", true, T.fonts.tiny)
-aboutAuthor:SetPoint("BOTTOMLEFT", 14, 12)
-
-local function statusTextForAddon(addon, target, snapshot, characterKey)
-    if not ns.IsProtectedAddon(addon) then
-        return "Disabled", "muted"
-    end
-
-    local accountRecord = snapshot and snapshot.account and snapshot.account.addons and snapshot.account.addons[addon]
-    local charRecord = snapshot and characterKey and snapshot.characters and snapshot.characters[characterKey]
-    charRecord = charRecord and charRecord.addons and charRecord.addons[addon]
-
-    local hasAccount = type(target.account) == "table" and #target.account > 0
-    local hasCharacter = type(target.character) == "table" and #target.character > 0
-    local savedAccount = (not hasAccount) or (accountRecord and type(accountRecord.entries) == "table")
-    local savedCharacter = (not hasCharacter) or (charRecord and type(charRecord.entries) == "table")
-
-    if savedAccount and savedCharacter then
-        local currentVersion = ns.GetAddonVersion(addon)
-        local savedVersion = (accountRecord and accountRecord.addonVersion) or (charRecord and charRecord.addonVersion)
-        if currentVersion and savedVersion and currentVersion ~= savedVersion then
-            return "Updated", "warning"
-        end
-        return "Saved", "success"
-    end
-
-    if snapshot then
-        return "Not saved", "warning"
-    end
-    return "Fallback", "muted"
-end
+local statusTextForAddon = ns.GetAddonSnapshotStatus
 
 local function colorForKind(kind)
     if kind == "success" then return C.success end
@@ -244,7 +224,7 @@ local function currentCharacterState(snapshot, characterKey)
     if not ns.CanSave() then return "Not prepared", "warning" end
     local needsCharacterData = false
     for addon, target in pairs(ns.GetTargets()) do
-        if ns.IsProtectedAddon(addon) and type(target.character) == "table" and #target.character > 0 then
+        if ns.IsProtectedAddon(addon) and ns.IsAddonLoaded(addon) and type(target.character) == "table" and #target.character > 0 then
             needsCharacterData = true
             break
         end
@@ -356,7 +336,7 @@ local function updateStatus(checkLive)
     saveButton:SetEnabledState(ns.CanSave())
     restoreButton:SetEnabledState(ns.CanRestore())
     detailsSub:SetText(ns.CanSave()
-        and "Saved means a checkpoint exists, not that live data is identical. Use /wtfix diff to inspect differences."
+        and "Saved means a checkpoint exists. Not loaded addons are not captured; existing data is retained. /wtfix diff compares live settings."
         or ns.GetPreparationState().reason)
 
     headerDetail:SetText(presentation.compact or "")
@@ -413,12 +393,17 @@ saveButton:SetScript("OnClick", function()
             saveButton:SetEnabledState(true)
             if not ok then
                 ns.Print("Save failed: " .. tostring(err or "unknown error"))
+                if result and ns.PrintCaptureFailures then ns.PrintCaptureFailures(result.failures) end
+                ns.Print("The previous checkpoint was retained. Use /wtfix check for capture and missing-variable details.")
                 return
             end
 
             ns.pendingReload = "save"
             panel:Refresh(true)
             ns.Print("Snapshot captured. Reload required to write it to disk.")
+            if result and result.omissions and result.omissions.count > 0 then
+                ns.Print(tostring(result.omissions.count) .. " nonpersistent fields omitted. Settings data captured; /wtfix check shows details.")
+            end
             ns.ShowReloadRequired("save")
         end
     )

@@ -15,7 +15,12 @@ function ns.ReadSavedVariables(source)
     if type(source) ~= "string" or #source > 64 * 1024 * 1024 then
         return nil, "SavedVariables input exceeds the supported size"
     end
-    local pos, count = 1, 0
+    -- Accept an optional file-format UTF-8 BOM without decoding any data bytes.
+    -- UTF-16 is not a Lua byte stream: reject it rather than guessing/transcoding.
+    if source:sub(1, 2) == "\255\254" or source:sub(1, 2) == "\254\255" then
+        return nil, "UTF-16 SavedVariables input is unsupported; no encoding conversion performed"
+    end
+    local pos, count = source:sub(1, 3) == "\239\187\191" and 4 or 1, 0
     local function fail(message) error(message .. " at byte " .. pos, 0) end
     local function skip()
         while true do

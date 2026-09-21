@@ -1,6 +1,6 @@
 local addonName, ns = ...
 
-ns.version = "0.8.8"
+ns.version = "0.9.0"
 ns.author = "NS"
 ns.addonName = addonName
 ns.media = "Interface\\AddOns\\WTFix\\Media\\"
@@ -136,9 +136,13 @@ SlashCmdList.WTFIX = function(message)
         if ns.PrintDifferences then ns.PrintDifferences() else ns.Print("comparison is not ready yet") end
         return
     end
+    if message == "check" then
+        if ns.PrintCaptureCheck then ns.PrintCaptureCheck() else ns.Print("capture check is not ready yet") end
+        return
+    end
     if message == "" then
         if ns.SettingsCompat and ns.SettingsCompat.Toggle then ns.SettingsCompat.Toggle() else ns.Print("settings are not ready yet") end
         return
     end
-    ns.Print("use /wtfix, /wtfix status or /wtfix diff")
+    ns.Print("use /wtfix, /wtfix status, /wtfix diff or /wtfix check")
 end

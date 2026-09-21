@@ -1,29 +1,29 @@
 {
-  "product_version": "0.8.8",
+  "product_version": "0.9.0",
   "bridge_protocol": 1,
   "implementation_authority": {
     "repository": "eggntoast/WTFix",
-    "commit": "cf42e1c3e5ba1c106de52645a1c3f85ca96141e4"
+    "commit": "2b5d612fd02c3d988728bc02a979a7fd5d69d5fd"
   },
-  "status": "local review only; not published",
+  "status": "public source export for WTFix 0.9.0",
   "implementation_files": [
     {
       "private_path": "AddOn/WTFix/Broker.lua",
       "public_path": "addon/WTFix/Broker.lua",
-      "sha256": "549B02F0699B52CF8A8DCDAFE74FCDB79339AB37CEC087A2C40639E0F9D7297B",
-      "bytes": 3331
+      "sha256": "908032A57217797BAFC740BA9CA11C58C6F96F7CFF89FBE5E48A69F953869839",
+      "bytes": 3500
     },
     {
       "private_path": "AddOn/WTFix/Core.lua",
       "public_path": "addon/WTFix/Core.lua",
-      "sha256": "6A5CACD6E46BF32BB2F8E1649CCCE0826AD9AC393E2FD77A735EFD3B3729F7F4",
-      "bytes": 5247
+      "sha256": "D30386B3E3E9F821C22E13C550B6A3E57C2D384CFC17D2E67F5FB38D8C3D32F7",
+      "bytes": 5427
     },
     {
       "private_path": "AddOn/WTFix/Import.lua",
       "public_path": "addon/WTFix/Import.lua",
-      "sha256": "095C4ED1B5EF7BE1E8A5E37697B0FAF8E676B3B4AF51357A02D024CF79441FE5",
-      "bytes": 7380
+      "sha256": "87399F592C91C563A1DFC5AEC31C580519CEC5040AE8FAF345E36B4649205020",
+      "bytes": 7773
     },
     {
       "private_path": "AddOn/WTFix/Libs/CallbackHandler-1.0/CallbackHandler-1.0.lua",
@@ -32,10 +32,10 @@
       "bytes": 7759
     },
     {
-      "private_path": "AddOn/WTFix/Libs/LICENSE-Ace3.txt",
-      "public_path": "addon/WTFix/Libs/LICENSE-Ace3.txt",
-      "sha256": "AFE050A430BAFDBCA7DA69D95897751239F4FAB415784A419A3CDC2519EEE9B2",
-      "bytes": 1697
+      "private_path": "AddOn/WTFix/Libs/LibDataBroker-1.1/LibDataBroker-1.1.lua",
+      "public_path": "addon/WTFix/Libs/LibDataBroker-1.1/LibDataBroker-1.1.lua",
+      "sha256": "F3D4758F2060215492C9764B1D7DC2A336826D4CD253CD54FF9FF7C6D78F04E2",
+      "bytes": 3139
     },
     {
       "private_path": "AddOn/WTFix/Libs/LibDBIcon-1.0/LibDBIcon-1.0.lua",
@@ -44,16 +44,16 @@
       "bytes": 16902
     },
     {
-      "private_path": "AddOn/WTFix/Libs/LibDataBroker-1.1/LibDataBroker-1.1.lua",
-      "public_path": "addon/WTFix/Libs/LibDataBroker-1.1/LibDataBroker-1.1.lua",
-      "sha256": "F3D4758F2060215492C9764B1D7DC2A336826D4CD253CD54FF9FF7C6D78F04E2",
-      "bytes": 3139
-    },
-    {
       "private_path": "AddOn/WTFix/Libs/LibStub/LibStub.lua",
       "public_path": "addon/WTFix/Libs/LibStub/LibStub.lua",
       "sha256": "186BAC9553513504FAC3A5C4550FF59F3AEE9E8A497376134F3CA01DE2ED18D0",
       "bytes": 2200
+    },
+    {
+      "private_path": "AddOn/WTFix/Libs/LICENSE-Ace3.txt",
+      "public_path": "addon/WTFix/Libs/LICENSE-Ace3.txt",
+      "sha256": "AFE050A430BAFDBCA7DA69D95897751239F4FAB415784A419A3CDC2519EEE9B2",
+      "bytes": 1697
     },
     {
       "private_path": "AddOn/WTFix/Libs/THIRD_PARTY.txt",
@@ -88,8 +88,8 @@
     {
       "private_path": "AddOn/WTFix/Restore.lua",
       "public_path": "addon/WTFix/Restore.lua",
-      "sha256": "12E742B0048C5C0DA595F0188DE46C8B1C3BCED59DA1407519BBC304C09F34DA",
-      "bytes": 4920
+      "sha256": "591E74E95474ED4DC09F1DD3612972298D8294BDAED8C3987443F5A2E2B8F583",
+      "bytes": 5466
     },
     {
       "private_path": "AddOn/WTFix/SettingsCompat.lua",
@@ -100,14 +100,20 @@
     {
       "private_path": "AddOn/WTFix/Snapshot.lua",
       "public_path": "addon/WTFix/Snapshot.lua",
-      "sha256": "CA931CFC2F35B9FA8AEEDBDC07F2707C736B95DDFEA500F8E5DDDEA298C2F6FE",
-      "bytes": 10783
+      "sha256": "633FCB87434594EB872D281C63B9EF9746E873B34F2F88154DB5FFC1E8ED416D",
+      "bytes": 15695
     },
     {
       "private_path": "AddOn/WTFix/Status.lua",
       "public_path": "addon/WTFix/Status.lua",
-      "sha256": "4FE68E6427C4692DB6239BFF62927F7FDE09964C7D15D1ED399C2C33A5A5D5C0",
-      "bytes": 9358
+      "sha256": "53934BE3F0BF124DC3C13B211DC15A4E9B8B78C57B7469D9DFCE4F472672F498",
+      "bytes": 17230
+    },
+    {
+      "private_path": "AddOn/WTFix/UI/About.lua",
+      "public_path": "addon/WTFix/UI/About.lua",
+      "sha256": "07FDBB4853E0DA3447C92C4A7862C2EDBB14A9E1C18C35E5C103FD6B9F637894",
+      "bytes": 4122
     },
     {
       "private_path": "AddOn/WTFix/UI/Components.lua",
@@ -124,8 +130,8 @@
     {
       "private_path": "AddOn/WTFix/UI/Panel.lua",
       "public_path": "addon/WTFix/UI/Panel.lua",
-      "sha256": "5C5891E995D433366DF1A9C4F3776561A5636D7D6B36889D94DCB4BC73B7D837",
-      "bytes": 17146
+      "sha256": "14F89F6DA03925FD8EA0C8E526A0B3B554F64F30A1A9B17C2C1C833ABEBC2686",
+      "bytes": 16695
     },
     {
       "private_path": "AddOn/WTFix/UI/Theme.lua",
@@ -136,14 +142,38 @@
     {
       "private_path": "AddOn/WTFix/WTFix.toc",
       "public_path": "addon/WTFix/WTFix.toc",
-      "sha256": "ECE64BFD8858055F187941B8EAC18157343F1E869BA197FAD83B2BF44BB57D6F",
-      "bytes": 689
+      "sha256": "FD3362B64E1C8868C1717930F519FA5A2BF93818CDCD57C1F307A3A44D556869",
+      "bytes": 702
     },
     {
       "private_path": "Change WoW Location.cmd",
       "public_path": "launcher/Change WoW Location.cmd",
-      "sha256": "C87A299C913C72A4B09F6652DE718DFB485402EA80B881BE9A73B98A35DA0A56",
+      "sha256": "722D2A14EEA7CAF4B5F923FAE0CAA0C49B202DEFD729238876F4CEA975952CBF",
       "bytes": 1011
+    },
+    {
+      "private_path": "Launcher.ps1",
+      "public_path": "launcher/Launcher.ps1",
+      "sha256": "319D2AF62D7DDF309D402669BD366FA0A4730879B9828F92976E12DEFB629DFE",
+      "bytes": 2556
+    },
+    {
+      "private_path": "Uninstall WTFix.cmd",
+      "public_path": "launcher/Uninstall WTFix.cmd",
+      "sha256": "23A0E236EEAE5E415160ED0D8D523FF176BB383FA3322C915E9ECFFE43E704C2",
+      "bytes": 1232
+    },
+    {
+      "private_path": "WTFix Launcher.cmd",
+      "public_path": "launcher/WTFix Launcher.cmd",
+      "sha256": "59918EB5283AD9DCE2C73C3A8C64B8156AFA5C324EBE1FDC89FAB0588E8B2A6E",
+      "bytes": 342
+    },
+    {
+      "private_path": "WTFix.ps1",
+      "public_path": "launcher/WTFix.ps1",
+      "sha256": "8C38C14AF86E1A46DE28A58FD8CA8CDCA1C698DD90A64B24030B4E24C405FAE5",
+      "bytes": 44487
     },
     {
       "private_path": "Companion/WTFix_Data/Begin.lua",
@@ -168,32 +198,8 @@
       "public_path": "launcher/Companion/WTFix_Data/WTFix_Data.toc",
       "sha256": "1EA3D837F6E0CFD7BD415EA1C1752371EC88F2578388A171BF37A51E0B6E4E1B",
       "bytes": 224
-    },
-    {
-      "private_path": "Launcher.ps1",
-      "public_path": "launcher/Launcher.ps1",
-      "sha256": "C451603A02EA27AABDAFE9D20AE14D730AAB4AE709441B94CAA13A23968821A3",
-      "bytes": 2556
-    },
-    {
-      "private_path": "Uninstall WTFix.cmd",
-      "public_path": "launcher/Uninstall WTFix.cmd",
-      "sha256": "5971C96C59B85E64F96F1F0C26B30550B52DD047E3217B47C99DC158716A5C07",
-      "bytes": 1232
-    },
-    {
-      "private_path": "WTFix Launcher.cmd",
-      "public_path": "launcher/WTFix Launcher.cmd",
-      "sha256": "F277AD937B031B4B235E19AEE35D35F37A7BDB8A073AD70873500E894F00689B",
-      "bytes": 342
-    },
-    {
-      "private_path": "WTFix.ps1",
-      "public_path": "launcher/WTFix.ps1",
-      "sha256": "48C90BEC21AA8F1236576D42A3C6F70A0495A8D71445A14B85C309F90163E774",
-      "bytes": 43683
     }
   ],
-  "documentation": "New public documentation; private investigation records excluded.",
-  "license": "MIT text copied from existing WTFix-Public LICENSE; third-party notices retained."
+  "documentation": "Public user and distribution documentation; private development tests and investigation material excluded.",
+  "license": "MIT text retained from WTFix-Public; bundled third-party notices retained with runtime source."
 }

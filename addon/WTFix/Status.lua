@@ -5,13 +5,73 @@ local function snapshotTime()
     return snapshot and tonumber(snapshot.createdAt) or nil
 end
 
-function ns.GetStatusState(checkLive)
+-- Recovery runs BEFORE dependent addons load. Never gate its writes on their
+-- load state. Classify its recorded outcomes when queried instead: dormant
+-- addons are not active coverage failures, and a later load becomes visible
+-- without reapplying globals after the addon has initialized or adopting data.
+function ns.GetRecoveryCoverage()
+    local stats = ns.restoreStats or {}
+    local result = {missingVariables=0, fallbackVariables=0, missingDetails={}, unloadedMissingDetails={},
+        unloadedAddons={}, unloadedAddonCount=0}
+    if not ns.GetPreparationState().ready then return result end
+    for addon in pairs(ns.GetTargets()) do
+        if ns.IsProtectedAddon(addon) and not ns.IsAddonLoaded(addon) then
+            result.unloadedAddons[#result.unloadedAddons+1] = addon
+        end
+    end
+    table.sort(result.unloadedAddons)
+    result.unloadedAddonCount = #result.unloadedAddons
+    for _, kind in ipairs({"missing", "fallback"}) do
+        local details = stats[kind .. "Details"]
+        if type(details) ~= "table" then
+            -- Unknown ownership must not hide a reported recovery problem.
+            result[kind .. "Variables"] = tonumber(stats[kind .. "Variables"]) or 0
+        else
+            for _, item in ipairs(details) do
+                if ns.IsProtectedAddon(item.addon) then
+                    if ns.IsAddonLoaded(item.addon) then
+                        result[kind .. "Variables"] = result[kind .. "Variables"] + 1
+                        if kind == "missing" then result.missingDetails[#result.missingDetails+1] = item end
+                    elseif kind == "missing" then
+                        result.unloadedMissingDetails[#result.unloadedMissingDetails+1] = item
+                    end
+                end
+            end
+        end
+    end
+    return result
+end
+
+function ns.GetAddonSnapshotStatus(addon, target, snapshot, characterKey)
+    if not ns.IsProtectedAddon(addon) then return "Disabled", "muted" end
+    if not ns.IsAddonLoaded(addon) then return "Not loaded", "muted" end
+    local account = snapshot and snapshot.account and snapshot.account.addons and snapshot.account.addons[addon]
+    local character = snapshot and characterKey and snapshot.characters and snapshot.characters[characterKey]
+    character = character and character.addons and character.addons[addon]
+    local function complete(record, names)
+        for _, name in ipairs(names or {}) do
+            if not (record and record.entries and record.entries[name]) then return false end
+        end
+        return true
+    end
+    if complete(account, target.account) and complete(character, target.character) then
+        local version = ns.GetAddonVersion(addon)
+        local savedVersion = (account and account.addonVersion) or (character and character.addonVersion)
+        if version and savedVersion and version ~= savedVersion then return "Updated", "warning" end
+        return "Saved", "success"
+    end
+    if snapshot then return "Not saved", "warning" end
+    return "Fallback", "muted"
+end
+
+function ns.GetStatusState(checkLive, coverage)
     local stats = ns.restoreStats or {}
     if not ns.GetPreparationState().ready then return "SETUP_REQUIRED" end
     if not stats.launcherDetected then return "NO_LAUNCHER" end
     if type(stats.warnings) == "table" and #stats.warnings > 0 then return "WARNING" end
     if not ns.HasSnapshot() then return "NO_SNAPSHOT" end
-    if (tonumber(stats.fallbackVariables) or 0) > 0 or (tonumber(stats.missingVariables) or 0) > 0 then return "PARTIAL" end
+    coverage = coverage or ns.GetRecoveryCoverage()
+    if coverage.fallbackVariables > 0 or coverage.missingVariables > 0 then return "PARTIAL" end
     -- Recovery health is independent of raw addon data equality. Session
     -- counters, logs and caches can change immediately after a correct restore.
     return "READY"
@@ -40,16 +100,18 @@ function ns.GetStatusSummary(checkLive)
     local snapshot, currentSource = ns.GetAuthoritativeSnapshot()
     local source = stats.snapshotSource or currentSource
     local warningDetails = copyWarnings(stats.warnings)
+    local coverage = ns.GetRecoveryCoverage()
     return {
-        state = ns.GetStatusState(checkLive),
+        state = ns.GetStatusState(checkLive, coverage),
         protectedAddons = tonumber(stats.protectedAddons) or 0,
         snapshotGeneration = snapshot and (tonumber(snapshot.generation) or 0) or 0,
         lastSaved = formatWhen(snapshotTime()),
         source = source,
         launcherDetected = stats.launcherDetected == true,
         snapshotVariables = tonumber(stats.snapshotVariables) or 0,
-        fallbackVariables = tonumber(stats.fallbackVariables) or 0,
-        missingVariables = tonumber(stats.missingVariables) or 0,
+        fallbackVariables = coverage.fallbackVariables,
+        missingVariables = coverage.missingVariables,
+        unloadedAddonCount = coverage.unloadedAddonCount,
         warnings = #warningDetails,
         warningDetails = warningDetails,
         differences = checkLive and ns.GetLiveDifferences() or nil,
@@ -116,7 +178,7 @@ function ns.GetStatusPresentation(checkLive)
             label = "Partial coverage",
             kind = "warning",
             compact = partialCompact(summary),
-            detail = "Some protected variables used disk fallback or are missing.",
+            detail = "Some loaded, protected variables used disk fallback or lacked recovery data.",
             summary = summary,
             warningDetails = summary.warningDetails,
         }
@@ -161,6 +223,7 @@ function ns.PrintStatus()
     ns.Print("Preparation: " .. ns.GetPreparationState().reason)
     ns.Print("Last saved: " .. s.lastSaved)
     ns.Print("Protected addons: " .. s.protectedAddons)
+    if s.unloadedAddonCount > 0 then ns.Print("Not loaded: " .. s.unloadedAddonCount .. " protected addons; existing data retained, no live capture. /wtfix check lists them.") end
     ns.Print("Recovery source: " .. tostring(s.source))
     ns.Print("Snapshot generation: " .. tostring(s.snapshotGeneration)
         .. " (restored " .. tostring(ns.restoreStats and ns.restoreStats.snapshotGeneration or 0) .. ")")
@@ -179,6 +242,72 @@ function ns.PrintStatus()
     if s.warnings > 0 then
         ns.Print("Restore warnings: " .. tostring(s.warnings))
     end
+    if s.missingVariables > 0 then ns.Print("Missing-variable details: /wtfix check (last recovery, separate from Save).") end
+    local snapshot = ns.GetAuthoritativeSnapshot()
+    local omitted = snapshot and snapshot.captureOmissions and snapshot.captureOmissions.count or 0
+    if omitted > 0 then ns.Print("Last Save omitted " .. tostring(omitted) .. " nonpersistent fields; /wtfix check shows details.") end
+end
+
+local function diagnosticText(value)
+    -- Do not allow arbitrary addon metadata/keys to create chat links or lines.
+    local text = tostring(value or "unknown"):gsub("|", "||"):gsub("[%c]", " ")
+    if #text > 480 then text = text:sub(1, 180) .. " ... " .. text:sub(-270) end
+    return text
+end
+
+function ns.PrintCaptureFailures(failures)
+    failures = failures or {}
+    for index = 1, math.min(40, #failures) do
+        local issue = failures[index]
+        ns.Print("Capture blocked: " .. diagnosticText(issue.addon) .. " (" .. diagnosticText(issue.scope)
+            .. ", version " .. diagnosticText(issue.addonVersion) .. "), " .. diagnosticText(issue.variable))
+        ns.Print("Path: " .. diagnosticText(issue.path))
+        ns.Print("Reason: " .. diagnosticText(issue.reason))
+    end
+    if #failures > 40 then ns.Print(tostring(#failures - 40) .. " more blocked variables (output capped).") end
+end
+
+function ns.PrintCaptureOmissions(report, label)
+    if not report or (report.count or 0) == 0 then return end
+    ns.Print(label .. ": " .. tostring(report.count) .. " nonpersistent fields omitted; scalar/table settings retained.")
+    local details = type(report.details) == "table" and report.details or {}
+    for index = 1, math.min(40, #details) do
+        local issue = details[index]
+        ns.Print("Omitted: " .. diagnosticText(issue.addon) .. " (" .. diagnosticText(issue.scope) .. "), " .. diagnosticText(issue.path))
+        ns.Print("Reason: " .. diagnosticText(issue.reason))
+    end
+    if report.count > #details then ns.Print(tostring(report.count - #details) .. " further omissions; detail storage capped at 40.") end
+end
+
+function ns.PrintCaptureCheck()
+    ns.Print(ns.version .. " capture check; no Save, Restore or reload performed.")
+    local result = ns.CheckCapture()
+    if not result.ready then ns.Print("SETUP REQUIRED: " .. tostring(result.reason)); return end
+    ns.Print(tostring(result.checked) .. " loaded, protected variables checked; " .. tostring(#result.failures) .. " blocked.")
+    ns.PrintCaptureFailures(result.failures)
+    ns.PrintCaptureOmissions(result.omissions, "Current capture projection (not saved)")
+    if #result.failures == 0 then ns.Print("Persistable live data is copyable now. This is not a persistence or recovery test.") end
+    local snapshot = ns.GetAuthoritativeSnapshot()
+    ns.PrintCaptureOmissions(snapshot and snapshot.captureOmissions, "Last committed Save")
+    local coverage = ns.GetRecoveryCoverage()
+    ns.Print("Missing at last recovery for currently loaded addons: " .. tostring(coverage.missingVariables) .. " (separate from the current capture check).")
+    local missing = coverage.missingDetails
+    for index = 1, math.min(40, #missing) do
+        local item = missing[index]
+        ns.Print("Missing: " .. diagnosticText(item.addon) .. " (" .. diagnosticText(item.scope) .. "), "
+            .. diagnosticText(item.variable) .. ": " .. diagnosticText(item.reason))
+    end
+    if #missing > 40 then ns.Print(tostring(#missing - 40) .. " more missing variables (output capped).") end
+    for index = 1, math.min(40, #coverage.unloadedAddons) do
+        ns.Print("Not loaded: " .. diagnosticText(coverage.unloadedAddons[index]) .. "; not captured, existing checkpoint/fallback data retained.")
+    end
+    if #coverage.unloadedAddons > 40 then ns.Print(tostring(#coverage.unloadedAddons-40) .. " more unloaded addons.") end
+    ns.Print("Unavailable recovery inputs for unloaded addons: " .. #coverage.unloadedMissingDetails .. " (not active missing coverage).")
+    for index = 1, math.min(40, #coverage.unloadedMissingDetails) do
+        local item = coverage.unloadedMissingDetails[index]
+        ns.Print("Unloaded / no recovery input: " .. diagnosticText(item.addon) .. " (" .. diagnosticText(item.scope) .. "), " .. diagnosticText(item.variable))
+    end
+    ns.Print("First blocking failure per variable; bounded omission details. No values printed or live data changed. Unusual keys are redacted; long paths shortened. No checkpoint adopted.")
 end
 
 function ns.PrintDifferences()
@@ -194,7 +323,7 @@ function ns.PrintDifferences()
         ns.Print(item.addon .. " (" .. item.scope .. "): " .. item.path)
     end
     if #differences.variables > 20 then ns.Print(tostring(#differences.variables - 20) .. " more differing variables.") end
-    ns.Print("One differing path per variable is shown. No values are printed; no fields are excluded from Save or Restore.")
+    ns.Print("One differing path per variable is shown; persistable data is compared. Nonpersistent fields are listed by /wtfix check. No values are printed.")
 end
 
 local function loginLine()

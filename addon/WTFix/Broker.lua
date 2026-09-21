@@ -59,6 +59,9 @@ broker.OnTooltipShow = function(tooltip)
     if summary.source then
         tooltip:AddLine("Recovery source: " .. tostring(summary.source), 0.62, 0.69, 0.76)
     end
+    if (summary.unloadedAddonCount or 0) > 0 then
+        tooltip:AddLine("Not loaded: " .. summary.unloadedAddonCount .. " protected addons", 0.62, 0.69, 0.76)
+    end
 
     local warningDetails = presentation and presentation.warningDetails or summary.warningDetails
     if type(warningDetails) == "table" and #warningDetails > 0 then
