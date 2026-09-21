@@ -4,7 +4,7 @@
 
 **Save the addon setup you trust. Restore it when something goes wrong. Keep it through reloads and future logins.**
 
-![WTFix 0.9.0 — Recovery](docs/images/wtfix-0.9.1-recovery.png)
+![WTFix 0.9.1 — Recovery](docs/images/wtfix-0.9.1-recovery.png)
 
 > WTFix creates an explicit trusted checkpoint of your addon SavedVariables and restores that checkpoint until **you** choose to replace it.
 
@@ -97,6 +97,8 @@ See the full [installation guide](docs/installation.md).
 
 ## WTFix 0.9.1
 
+![WTFix 0.9.1 — About](docs/images/wtfix-0.9.1-about.png)
+
 What's new:
 
 - More reliable character-specific recovery when Forever's in-game character name and internal character-folder identity differ.
@@ -109,7 +111,7 @@ This is a recovery-hardening release. **Bridge protocol 1 and snapshot schema 1 
 ---
 ## WTFix 0.9.0
 
-![WTFix 0.9.0 — About](docs/images/wtfix-0.9.1-about.png)
+![WTFix 0.9.0 — About](docs/images/wtfix-0.9.0-about.png)
 
 What's new:
 
