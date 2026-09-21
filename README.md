@@ -118,21 +118,7 @@ What's new:
 
 This is a recovery-hardening release. **Bridge protocol 1 and snapshot schema 1 are unchanged.**
 
----
-## WTFix 0.9.0
-
-![WTFix 0.9.0 — About](docs/images/wtfix-0.9.0-about.png)
-
-What's new:
-
-- Safer snapshots when addons mix persistent settings with temporary runtime-only values.
-- Compatibility improvements for **EllesmereUI** and **Prat** chat history.
-- Byte-safe recovery preparation for binary and non-UTF-8 SavedVariables data, including **Questie-style binary stores**.
-- Installed protected addons that are not currently loaded now show **Not loaded** instead of incorrectly reducing active recovery coverage.
-- Improved `/wtfix check` diagnostics.
-- New **Recovery** and **About** tabs with current changes and a copyable bug-report link.
-
-See the full [changelog](CHANGELOG.md).
+See the full [changelog](CHANGELOG.md) for previous releases.
 
 ---
 
