@@ -67,13 +67,18 @@ Coverage depends on what each addon actually stores in its declared SavedVariabl
 
 **Save Current Settings → Save Snapshot → Reload Now**
 
-The selected addon settings become your trusted recovery checkpoint.
+WTFix captures the currently committed SavedVariables for the protected addons and makes them your new trusted recovery checkpoint.
 
 ### Restore
 
 **Restore Saved Settings → Prepare Restore → Reload Now**
 
 WTFix restores the trusted checkpoint and discards unsaved changes for protected addons.
+
+> [!IMPORTANT]
+> WTFix protects the SavedVariables state that actually exists when you save the snapshot.
+>
+> Some addons do not immediately commit every settings change to SavedVariables. If an addon has its own **Apply** or **Reload** workflow, complete that first and verify the settings survived before creating a new WTFix snapshot.
 
 ---
 
@@ -138,7 +143,7 @@ Unsupported roots, unsafe keys, cycles and other structural failures still block
 
 An installed protected addon can be disabled, unavailable for the current game type or waiting to load on demand.
 
-WTFix now reports these as:
+WTFix reports these as:
 
 > **Not loaded**
 
@@ -148,24 +153,150 @@ Existing checkpoint/fallback data is retained.
 
 ---
 
-## Addons with their own Apply / Reload button
+## Addons with their own Apply / Reload workflow
 
-Some addons keep changed settings in private working state until their own **Apply** or **Reload** action writes those settings into SavedVariables.
+Some addons keep changed settings in private or temporary working state until their own **Apply** or **Reload** action commits those changes to SavedVariables.
 
 For those addons:
 
-1. Disable WTFix protection for that addon.
+1. Temporarily disable WTFix protection for that addon.
 2. Make the intended settings changes.
-3. Use the addon's own Reload/Apply mechanism.
-4. Verify the settings survived the reload.
+3. Use the addon's own **Apply** or **Reload** mechanism.
+4. Verify the intended settings survived the reload.
 5. Re-enable WTFix protection.
-6. Explicitly **Save Snapshot** in WTFix.
+6. Use **Save Current Settings → Save Snapshot → Reload Now**.
 
 Re-enabling protection alone does **not** adopt the changed settings.
 
-Deleting another addon's SavedVariables is **not** part of the normal WTFix workflow.
+> [!IMPORTANT]
+> If the addon cannot preserve its own settings after its own Apply/Reload step, do **not** immediately create a new WTFix snapshot.
+>
+> First establish a known-good addon state, then let WTFix adopt that state.
+
+Deleting another addon's SavedVariables is **not part of the normal WTFix workflow**.
+
+However, WoW Forever currently has some addon-specific SavedVariables problems that may require a separate repair before WTFix can protect the resulting good state.
 
 See [Save, Restore and pending settings](docs/usage.md).
+
+---
+
+## ⚠️ WoW Forever SavedVariables quirks
+
+Some addons can appear to reset or revert even though WTFix itself is restoring exactly the SavedVariables state it was previously told to trust.
+
+The important distinction is:
+
+> **WTFix can only protect the state that the addon has actually committed to SavedVariables.**
+
+Different addons handle that state differently.
+
+### Leatrix Plus
+
+**Leatrix Plus currently has a known settings-saving problem on WoW Forever.**
+
+If Leatrix Plus keeps reverting settings even after using its own Reload button, the following repair has been confirmed to work.
+
+> [!WARNING]
+> This is a specific Leatrix Plus / WoW Forever persistence workaround.
+>
+> It is **not** the normal WTFix setup procedure and should not be assumed to apply to every addon.
+
+1. Log into WoW with both **WTFix** and **Leatrix_Plus** enabled.
+
+2. Keep WoW running and Alt+Tab to your account SavedVariables folder:
+
+   `World of Warcraft\_classic_beta_\WTF\Account\<account>\SavedVariables`
+
+3. Find:
+
+   `Leatrix_Plus.lua`
+
+4. Delete **`Leatrix_Plus.lua` while WoW is still running**.
+
+   If you do not need the backup, you can also delete:
+
+   `Leatrix_Plus.lua.bak`
+
+   **Do NOT use `/reload` yet.**
+
+5. Alt+Tab back into WoW.
+
+6. Configure **Leatrix Plus exactly how you want it**.
+
+7. If Leatrix Plus shows its own **Reload** button, use that button.
+
+8. After the interface reloads, reopen Leatrix Plus and **confirm that the settings are still enabled**.
+
+9. Open WTFix and make sure **Leatrix_Plus is checked in the Protected Addons list**.
+
+10. Use:
+
+   **Save Current Settings → Save Snapshot → Reload Now**
+
+After that reload, the repaired Leatrix Plus state should remain saved and **WTFix should now be protecting that new working state**.
+
+### Why the Leatrix Plus workaround works
+
+The important part is that `Leatrix_Plus.lua` is removed **while Leatrix Plus is already loaded in the running game**.
+
+Deleting the disk file does not erase the already-loaded configuration from memory.
+
+Leatrix Plus can then write a fresh SavedVariables state through its own Reload process.
+
+Once that fresh state survives Leatrix Plus's own reload, WTFix can safely adopt it as the new trusted checkpoint.
+
+You should **not need to repeat this entire repair process for every future Leatrix Plus setting change** once a healthy state has been established and saved.
+
+Leatrix itself currently documents the settings-not-saving behavior as a **WoW Forever game bug**.
+
+See the ongoing compatibility report and detailed discussion in:
+
+**[Issue #4 — Leatrix Plus / Leatrix Maps / similar SavedVariables behavior](https://github.com/eggntoast/WTFix-Public/issues/4)**
+
+---
+
+## Other addons with similar symptoms
+
+Other addons can show similar symptoms on WoW Forever, but they do **not necessarily require the Leatrix Plus file-deletion workaround**.
+
+### Baganator
+
+Baganator has been successfully recovered without deleting its SavedVariables.
+
+The working sequence was:
+
+1. Disable **Baganator** protection in WTFix.
+2. Use `/reload`.
+3. Configure Baganator or import the desired Baganator configuration.
+4. Confirm the settings are correct.
+5. Re-enable Baganator protection in WTFix.
+6. Use:
+
+   **Save Current Settings → Save Snapshot → Reload Now**
+
+After the new snapshot is created, WTFix protects the newly configured Baganator state.
+
+### Other addons
+
+Addons such as:
+
+- BetterBlizzFrames
+- Chattynator
+- Farmer
+- Leatrix Maps
+- other addons with their own persistence or Apply/Reload behavior
+
+may show similar symptoms, but their exact persistence behavior is still being investigated.
+
+Do **not** assume that deleting their SavedVariables is the correct fix.
+
+The general rule is:
+
+> [!IMPORTANT]
+> **Make sure the addon itself has successfully committed the settings you want before creating a new WTFix snapshot.**
+
+If the addon cannot preserve its own configuration while temporarily excluded from WTFix recovery, the addon may require its own persistence repair before WTFix can safely adopt the new state.
 
 ---
 
@@ -201,6 +332,8 @@ Include:
 - `/wtfix status`
 - for Save/capture problems, `/wtfix check`
 - the exact steps that led to the problem
+- whether the addon keeps the intended settings while temporarily excluded from WTFix protection
+- whether the addon has its own Apply/Reload mechanism
 
 Review logs and SavedVariables before posting them publicly; they may contain personal data.
 
@@ -210,11 +343,14 @@ Review logs and SavedVariables before posting them publicly; they may contain pe
 
 WTFix deliberately does **not** silently trust later changes.
 
-- Save Snapshot captures declared SavedVariables when you explicitly save.
+- Save Snapshot captures the protected addon's currently committed SavedVariables when you explicitly save.
 - Later addon writes do not silently replace the trusted checkpoint.
 - Re-enabling protection does not automatically adopt changed data.
 - Restore returns protected addons to the saved checkpoint.
 - If preparation cannot be trusted, WTFix fails closed instead of pretending recovery is active.
+- WTFix does not automatically guess that a newly changed or larger addon state should replace the checkpoint you explicitly trusted.
+
+This explicit adoption boundary is intentional.
 
 ---
 
