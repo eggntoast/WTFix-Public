@@ -35,7 +35,13 @@ CurseForge distributes the addon/runtime separately. GitHub provides the Full an
 
 If your existing preparation is healthy, 0.9.1 does not require preparation to be regenerated solely because of this patch.
 
-Run the launcher again with WoW closed after adding characters, changing the selected installation/account, updating managed addons, or if WTFix shows **SETUP REQUIRED**.
+Run the launcher again with WoW closed after:
+
+- installing a new addon that you want WTFix to protect
+- updating an addon whose SavedVariables declarations may have changed
+- adding characters
+- changing the selected WoW installation/account
+- or if WTFix shows **SETUP REQUIRED**
 
 ### From 0.8.8
 
@@ -90,7 +96,7 @@ With WoW closed, run:
 
 `WTFix Launcher.cmd`
 
-The launcher prepares the recovery environment, verifies the disk bridge, backs up recovery inputs and opens Battle.net.
+The launcher prepares the recovery environment, discovers supported addon SavedVariables, verifies the disk bridge, backs up recovery inputs and opens Battle.net.
 
 Until preparation succeeds, WTFix clearly shows:
 
@@ -105,6 +111,31 @@ After successful preparation:
 - relogs and full client restarts work
 - the launcher does **not** remain running in the background
 - you do **not** need to run it before every WoW session
+
+### Installed a new addon and it does not appear in Protected Addons?
+
+> [!IMPORTANT]
+> **Close WoW completely and run `WTFix Launcher.cmd` again.**
+
+WTFix discovers supported addon SavedVariables during launcher preparation.
+
+If you install a new addon after WTFix was already prepared — for example **TomTom** or another addon that declares SavedVariables — WTFix may not know about that addon yet.
+
+The normal procedure is:
+
+1. **Close WoW completely.**
+2. Run **`WTFix Launcher.cmd`** again.
+3. Let preparation complete successfully.
+4. Start WoW again through Battle.net.
+5. Open WTFix and check **Protected Addons**.
+
+The newly discovered addon should then be available for protection if it declares SavedVariables that WTFix supports.
+
+**You do not need to reinstall WTFix or create a new WTFix installation. You only need to refresh preparation by running the launcher again.**
+
+This is also why the launcher should be run again after installing or updating addons that change their SavedVariables declarations.
+
+If an addon is still missing after successful preparation, use `/wtfix check` and report it so its SavedVariables behavior can be investigated.
 
 See the full [installation guide](docs/installation.md).
 
@@ -150,6 +181,10 @@ WTFix reports these as:
 They do not count as active missing recovery coverage merely because their globals are unavailable while the addon is not running.
 
 Existing checkpoint/fallback data is retained.
+
+> **This is different from a newly installed addon that does not appear in Protected Addons at all.**
+>
+> If a newly installed addon is missing from the list, close WoW and run **`WTFix Launcher.cmd` again** so WTFix can refresh its preparation and discover it.
 
 ---
 
@@ -334,6 +369,8 @@ Include:
 - the exact steps that led to the problem
 - whether the addon keeps the intended settings while temporarily excluded from WTFix protection
 - whether the addon has its own Apply/Reload mechanism
+
+If a **newly installed addon is missing entirely from Protected Addons**, first close WoW and rerun **`WTFix Launcher.cmd`**. If it is still missing after successful preparation, include that in the report.
 
 Review logs and SavedVariables before posting them publicly; they may contain personal data.
 
