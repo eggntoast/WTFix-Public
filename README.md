@@ -2,11 +2,11 @@
 
 ### SavedVariables recovery for **World of Warcraft: Forever**
 
-**Save the addon setup you trust. Restore it when something goes wrong. Keep it through reloads and future logins.**
+WTFix lets you save a working copy of your addon settings and restore it later if something gets reset, overwritten or otherwise goes wrong.
 
 ![WTFix — Recovery](docs/images/wtfix-0.9.1-recovery.png)
 
-> WTFix creates an explicit trusted checkpoint of your addon SavedVariables and restores that checkpoint until **you** choose to replace it.
+WTFix keeps using that saved snapshot until **you** choose to replace it with a new one.
 
 ---
 
@@ -284,122 +284,23 @@ See [Save, Restore and pending settings](docs/usage.md).
 
 ---
 
-## ⚠️ WoW Forever SavedVariables quirks
+## WoW Forever SavedVariables quirks
 
-Some addons can appear to reset or revert even though WTFix itself is restoring exactly the SavedVariables state it was previously told to trust.
+Some addons currently have their own settings-saving problems on WoW Forever, even when WTFix is not involved.
 
-The important distinction is:
-
-> **WTFix can only protect the state that the addon has actually committed to SavedVariables.**
-
-Different addons handle that state differently.
+WTFix can only protect settings that the addon has actually written to SavedVariables.
 
 ### Leatrix Plus
 
-**Leatrix Plus currently has a known settings-saving problem on WoW Forever.**
+Leatrix Plus has a confirmed WoW Forever settings-saving issue and workaround.
 
-If Leatrix Plus keeps reverting settings even after using its own Reload button, the following repair has been confirmed to work.
-
-> [!WARNING]
-> This is a specific Leatrix Plus / WoW Forever persistence workaround.
->
-> It is **not** the normal WTFix setup procedure and should not be assumed to apply to every addon.
-
-1. Log into WoW with both **WTFix** and **Leatrix_Plus** enabled.
-
-2. Keep WoW running and Alt+Tab to your account SavedVariables folder:
-
-   `World of Warcraft\_classic_beta_\WTF\Account\<account>\SavedVariables`
-
-3. Find:
-
-   `Leatrix_Plus.lua`
-
-4. Delete **`Leatrix_Plus.lua` while WoW is still running**.
-
-   If you do not need the backup, you can also delete:
-
-   `Leatrix_Plus.lua.bak`
-
-   **Do NOT use `/reload` yet.**
-
-5. Alt+Tab back into WoW.
-
-6. Configure **Leatrix Plus exactly how you want it**.
-
-7. If Leatrix Plus shows its own **Reload** button, use that button.
-
-8. After the interface reloads, reopen Leatrix Plus and **confirm that the settings are still enabled**.
-
-9. Open WTFix and make sure **Leatrix_Plus is checked in the Protected Addons list**.
-
-10. Use:
-
-   **Save Current Settings → Save Snapshot → Reload Now**
-
-After that reload, the repaired Leatrix Plus state should remain saved and **WTFix should now be protecting that new working state**.
-
-### Why the Leatrix Plus workaround works
-
-The important part is that `Leatrix_Plus.lua` is removed **while Leatrix Plus is already loaded in the running game**.
-
-Deleting the disk file does not erase the already-loaded configuration from memory.
-
-Leatrix Plus can then write a fresh SavedVariables state through its own Reload process.
-
-Once that fresh state survives Leatrix Plus's own reload, WTFix can safely adopt it as the new trusted checkpoint.
-
-You should **not need to repeat this entire repair process for every future Leatrix Plus setting change** once a healthy state has been established and saved.
-
-Leatrix itself currently documents the settings-not-saving behavior as a **WoW Forever game bug**.
-
-See the ongoing compatibility report and detailed discussion in:
+The full workaround and discussion are here:
 
 **[Issue #4 — Leatrix Plus / Leatrix Maps / similar SavedVariables behavior](https://github.com/eggntoast/WTFix-Public/issues/4)**
 
----
+Other addons can show similar symptoms without having the same cause, so do not assume the Leatrix Plus workaround applies to everything.
 
-## Other addons with similar symptoms
-
-Other addons can show similar symptoms on WoW Forever, but they do **not necessarily require the Leatrix Plus file-deletion workaround**.
-
-### Baganator
-
-Baganator has been successfully recovered without deleting its SavedVariables.
-
-The working sequence was:
-
-1. Disable **Baganator** protection in WTFix.
-2. Use `/reload`.
-3. Configure Baganator or import the desired Baganator configuration.
-4. Confirm the settings are correct.
-5. Re-enable Baganator protection in WTFix.
-6. Use:
-
-   **Save Current Settings → Save Snapshot → Reload Now**
-
-After the new snapshot is created, WTFix protects the newly configured Baganator state.
-
-### Other addons
-
-Addons such as:
-
-- BetterBlizzFrames
-- Chattynator
-- Farmer
-- Leatrix Maps
-- other addons with their own persistence or Apply/Reload behavior
-
-may show similar symptoms, but they do **not necessarily have the same cause**.
-
-Do **not** assume that deleting their SavedVariables is the correct fix.
-
-The general rule is:
-
-> [!IMPORTANT]
-> **Make sure the addon itself has successfully committed the settings you want before creating a new WTFix snapshot.**
-
-If the addon cannot preserve its own configuration while temporarily excluded from WTFix recovery, the addon may require its own persistence repair before WTFix can safely adopt the new state.
+For addons that have their own Apply or Reload workflow, follow the section above before creating a new WTFix snapshot.
 
 ---
 
@@ -480,9 +381,3 @@ This explicit adoption boundary is intentional.
 WTFix is released under the **MIT License**.
 
 Bundled third-party components retain their respective licenses, copyrights and notices.
-
----
-
-### Built for recovery, not guesswork.
-
-**Save a setup you trust. Keep control over when it changes. Restore it when you need it.**
