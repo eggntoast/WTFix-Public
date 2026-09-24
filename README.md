@@ -43,11 +43,7 @@ Linux preparation uses explicit game-folder and account selection. It does **not
 
 After preparation, start WoW normally through your existing launcher or game manager and verify preparation with `/wtfix status` before using Save or Restore.
 
-The release also includes:
-
-`WTFix-0.9.2-SHA256SUMS.txt`
-
-for verifying the official release packages.
+SHA256 hashes for the official release packages are listed in the **[WTFix 0.9.2 release notes](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.2)**.
 
 > Do **not** use GitHub's automatically generated **Source code** ZIP/TAR files as WTFix installation packages. Use the named WTFix downloads attached to the release.
 
