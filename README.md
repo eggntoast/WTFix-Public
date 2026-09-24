@@ -36,9 +36,6 @@ Linux preparation requires **Python 3.10+**.
 
 **[Linux installation and preparation guide](docs/linux-preparation.md)**
 
-> [!NOTE]
-> Native Linux/Wine validation is still pending.
-
 Linux preparation uses explicit game-folder and account selection. It does **not** choose a Wine/Proton runner and does **not** launch Battle.net, Wine, Proton or WoW.
 
 After preparation, start WoW normally through your existing launcher or game manager and verify preparation with `/wtfix status` before using Save or Restore.
@@ -177,8 +174,6 @@ After preparation completes:
 3. Run `/wtfix status`.
 4. Verify preparation is ready before using Save or Restore.
 
-Native Linux/Wine validation is still pending, so successful filesystem preparation alone is not a universal compatibility claim for every Wine/Proton runner or filesystem.
-
 See the full **[Linux installation and preparation guide](docs/linux-preparation.md)**.
 
 ---
@@ -222,8 +217,6 @@ What's new:
 - Aligned the Protected Addons **SNAPSHOT** heading with its values across panel sizes and UI scales.
 
 Linux preparation requires **Python 3.10+**.
-
-Native Linux/Wine validation is still pending.
 
 **Bridge protocol 1 and snapshot schema 1 are unchanged.**
 

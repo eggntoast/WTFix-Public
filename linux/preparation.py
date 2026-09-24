@@ -1,4 +1,4 @@
-"""Protocol-1 preparation core. Linux preview; no game launch or Lua execution.
+"""Protocol-1 preparation core. No game launch or Lua execution.
 
 Filesystem policy is deliberately narrower than the Windows launcher: the selected
 root may resolve through a link, but links inside input trees are rejected, except

@@ -4,9 +4,9 @@
   "snapshot_schema": 1,
   "implementation_authority": {
     "repository": "eggntoast/WTFix",
-    "commit": "c9732352453a97c6f95ff57e7e28d140e7f57d43"
+    "commit": "5824915f86dd33d98dded903109cda79f5faffe7"
   },
-  "status": "public source export for WTFix 0.9.2; native Linux/Wine validation pending",
+  "status": "public source export for WTFix 0.9.2",
   "implementation_files": [
     {
       "private_path": "AddOn/WTFix/Broker.lua",
@@ -113,8 +113,8 @@
     {
       "private_path": "AddOn/WTFix/UI/About.lua",
       "public_path": "addon/WTFix/UI/About.lua",
-      "sha256": "6CC982285DDEE288BAA63A2D331B2F9207D3663AF59E787FD1AA01E1101669F4",
-      "bytes": 5585
+      "sha256": "EEB6CF2D2FA47116E6BA3A76ACACB7E4F78EF022BA10560BF7677D72DC94437B",
+      "bytes": 5575
     },
     {
       "private_path": "AddOn/WTFix/UI/Components.lua",
@@ -203,14 +203,14 @@
     {
       "private_path": "tools/linux/prepare.py",
       "public_path": "linux/prepare.py",
-      "sha256": "3D46F8196D031993B30425EBC6B079E3266E139034DCA4FE52E6E6BA556D7C30",
-      "bytes": 4355
+      "sha256": "9C2D03739640BE214B2F0C308B37DFA0A8AA47056F6C87995B2117B23C6EEC45",
+      "bytes": 4190
     },
     {
       "private_path": "tools/linux/preparation.py",
       "public_path": "linux/preparation.py",
-      "sha256": "9AC69BD5DBDAB72EA7B8F375F7DAE136609F46DF3C87587C9800991D9F90A3BA",
-      "bytes": 25374
+      "sha256": "DF1EFD540BA51468CA254749ED593432D3642ACE5A73F306BE9EF247E018C490",
+      "bytes": 25359
     },
     {
       "private_path": "Companion/WTFix_Data/Begin.lua",

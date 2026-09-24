@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare only. Python 3.10+; Linux preview, native validation pending."""
+"""WTFix Linux preparation. Requires Python 3.10 or newer."""
 import argparse
 import os
 from pathlib import Path
@@ -30,7 +30,7 @@ def assert_game_closed(proc=Path("/proc")):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=f"WTFix {VERSION} Linux preparation preview (no game launch)")
+    parser = argparse.ArgumentParser(description=f"WTFix {VERSION} Linux preparation")
     parser.add_argument("--wow-folder", required=True, type=Path)
     parser.add_argument("--account", help="Exact WTF/Account folder name; never auto-selected")
     parser.add_argument("--state-dir", type=Path, default=Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "wtfix")
@@ -55,16 +55,15 @@ def main(argv=None):
         print(f"Installation: {p['wow']}\nSelected account folder: {args.account}")
         print(f"{len(p['targets'])} addon targets; {len(p['characters'])} unique prepared character names (account not authenticated).")
         if args.dry_run:
-            print("DRY RUN ONLY. No preparation performed; no readiness claim.")
+            print("DRY RUN ONLY. No files changed. Run again with --confirm-wow-closed to prepare recovery.")
             return 0
         if not args.confirm_wow_closed:
             raise PreparationError("Exit WoW in every session, then pass --confirm-wow-closed")
         result = prepare(p, args.state_dir, assert_game_closed)
-        print("FILESYSTEM PREPARATION COMPLETE — native client verification still required.")
+        print("PREPARATION COMPLETE")
         print(f"Recovery input backup verified: {result['backup']}")
         print(f"Directory bridge and preparation files verified. TOC updates: {result['toc_updates']}")
         print("Start WoW through your normal manager. Check /wtfix status before using Save/Restore.")
-        print("Linux preview: native validation pending. No game or Wine process was launched.")
         return 0
     except (PreparationError, OSError, ValueError, UnicodeError) as error:
         print(f"PREPARATION NOT COMPLETED: {error}", file=sys.stderr)

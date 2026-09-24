@@ -9,8 +9,6 @@
 
 Linux preparation requires Python 3.10+.
 
-Native Linux/Wine validation is still pending.
-
 Bridge protocol 1 and snapshot schema 1 are unchanged.
 
 ## 0.9.1

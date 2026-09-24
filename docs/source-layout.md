@@ -57,8 +57,6 @@ Contains:
 
 It does **not** contain the WTFix runtime.
 
-Native Linux/Wine validation is still pending.
-
 ## CurseForge package
 
 `WTFix-Addon-0.9.2.zip` contains only the WTFix addon runtime and is used for the CurseForge distribution route.
