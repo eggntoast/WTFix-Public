@@ -1,9 +1,23 @@
 # Changelog
 
+## 0.9.2
+
+- Added Linux recovery preparation with explicit game-folder/account selection, verified backups and interrupted-preparation recovery.
+- Added dedicated **Linux Full** and **Linux Prepare** packages.
+- Corrected ZIP paths for portable extraction on Windows and Linux.
+- Aligned the Protected Addons **SNAPSHOT** heading with its values across panel sizes and UI scales.
+
+Linux preparation requires Python 3.10+.
+
+Native Linux/Wine validation is still pending.
+
+Bridge protocol 1 and snapshot schema 1 are unchanged.
+
 ## 0.9.1
 
 - More reliable character-specific recovery when Forever's in-game character name and internal character-folder identity differ. Ambiguous matches are not guessed.
 - Save now validates the complete assembled checkpoint against recovery limits before replacing the previous trusted checkpoint. If validation fails, the previous checkpoint remains intact.
+
 ## 0.9.0
 
 - Safer snapshots for addons that mix settings with temporary runtime values, with compatibility improvements for EllesmereUI and Prat chat history.
@@ -14,11 +28,13 @@
 
 ### Updating from 0.8.8
 
-Update both the addon/runtime and launcher, then run the 0.9.0 launcher once with WoW closed to regenerate preparation.
+Update both the addon/runtime and current preparation tools.
+
+Windows users upgrading directly from 0.8.8 should run the current launcher once with WoW closed to regenerate preparation.
 
 Updating the addon alone leaves older generated bootstrap data in place.
 
-0.9.0 prevents new encoding corruption but cannot reconstruct SavedVariables data already corrupted by an older preparation. Preserve known-good backups when recovery may be required.
+The byte-safe preparation prevents new encoding corruption but cannot reconstruct SavedVariables data already corrupted by an older preparation. Preserve known-good backups when recovery may be required.
 
 ## 0.8.8
 

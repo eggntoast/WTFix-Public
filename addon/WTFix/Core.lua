@@ -1,6 +1,6 @@
 local addonName, ns = ...
 
-ns.version = "0.9.1"
+ns.version = "0.9.2"
 ns.author = "NS"
 ns.addonName = addonName
 ns.media = "Interface\\AddOns\\WTFix\\Media\\"

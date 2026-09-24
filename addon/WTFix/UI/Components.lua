@@ -339,6 +339,20 @@ function ns.UI_CreateStatusPill(parent)
     return frame
 end
 
+-- Header and row cells use the same viewport width and column geometry.
+-- Keeping these anchors shared avoids compensating for the scrollbar by pixels.
+local snapshotWidth, versionWidth, rightInset, columnGap = 98, 58, 4, 2
+ns.UI_AddonColumnInset = rightInset + versionWidth + columnGap + snapshotWidth + columnGap
+function ns.UI_AnchorAddonColumns(parent, snapshot, version)
+    snapshot:SetWidth(snapshotWidth)
+    snapshot:SetPoint("RIGHT", parent, "RIGHT", -(rightInset + versionWidth + columnGap), 0)
+    snapshot:SetJustifyH("LEFT")
+    snapshot:SetWordWrap(false)
+    version:SetWidth(versionWidth)
+    version:SetPoint("RIGHT", parent, "RIGHT", -rightInset, 0)
+    version:SetJustifyH("RIGHT")
+end
+
 function ns.UI_CreateAddonRow(parent)
     local row = CreateFrame("Frame", nil, parent)
     row:SetHeight(M.rowHeight)
@@ -355,17 +369,12 @@ function ns.UI_CreateAddonRow(parent)
 
     row.toggle = ns.UI_CreateToggle(row, "", true, 180, M.rowHeight)
     row.toggle:SetPoint("LEFT", 4, 0)
-    row.toggle:SetPoint("RIGHT", row, "RIGHT", -164, 0)
+    row.toggle:SetPoint("RIGHT", row, "RIGHT", -ns.UI_AddonColumnInset, 0)
 
     row.status = ns.UI_CreateLabel(row, "", true, T.fonts.bodySmall)
-    row.status:SetWidth(98)
-    row.status:SetPoint("RIGHT", row, "RIGHT", -64, 0)
-    row.status:SetJustifyH("LEFT")
 
     row.version = ns.UI_CreateLabel(row, "", true, T.fonts.bodySmall)
-    row.version:SetWidth(58)
-    row.version:SetPoint("RIGHT", -4, 0)
-    row.version:SetJustifyH("RIGHT")
+    ns.UI_AnchorAddonColumns(row, row.status, row.version)
 
     row.__bg = bg
 

@@ -1,10 +1,10 @@
 # WTFix
 
-### SavedVariables recovery for **World of Warcraft: Forever (Windows)**
+### SavedVariables recovery for **World of Warcraft: Forever**
 
 **Save the addon setup you trust. Restore it when something goes wrong. Keep it through reloads and future logins.**
 
-![WTFix 0.9.1 — Recovery](docs/images/wtfix-0.9.1-recovery.png)
+![WTFix — Recovery](docs/images/wtfix-0.9.1-recovery.png)
 
 > WTFix creates an explicit trusted checkpoint of your addon SavedVariables and restores that checkpoint until **you** choose to replace it.
 
@@ -12,30 +12,60 @@
 
 ## Download
 
-### GitHub — recommended for a complete installation
+### WTFix 0.9.2
 
-**[Download WTFix 0.9.1](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.1)**
+**[Download WTFix 0.9.2](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.2)**
+
+### Windows
 
 | Package | Use |
 | --- | --- |
-| `WTFix-Full-0.9.1.zip` | **Recommended for a fresh installation.** Includes the addon runtime, launcher and preparation components. |
-| `WTFix-Launcher-0.9.1.zip` | For users who already install the WTFix addon/runtime separately, including through CurseForge. |
+| `WTFix-Full-0.9.2.zip` | **Recommended for a fresh Windows installation.** Includes the addon runtime, Windows launcher and preparation components. |
+| `WTFix-Launcher-0.9.2.zip` | For users who already install the WTFix addon/runtime separately, including through CurseForge. |
 
-> Do **not** use GitHub's automatically generated **Source code** ZIP/TAR files as installation packages. Use the named WTFix downloads from the Releases page.
+**[Windows installation guide](docs/installation.md)**
 
-CurseForge distributes the addon/runtime separately. GitHub provides the Full and Launcher packages.
+### Linux
+
+| Package | Use |
+| --- | --- |
+| `WTFix-Linux-Full-0.9.2.zip` | Includes the addon runtime, Linux preparation tools and companion. |
+| `WTFix-Linux-Prepare-0.9.2.zip` | Linux preparation tools and companion only, for an existing WTFix runtime installation. |
+
+Linux preparation requires **Python 3.10+**.
+
+**[Linux installation and preparation guide](docs/linux-preparation.md)**
+
+> [!NOTE]
+> Native Linux/Wine validation is still pending.
+
+Linux preparation uses explicit game-folder and account selection. It does **not** choose a Wine/Proton runner and does **not** launch Battle.net, Wine, Proton or WoW.
+
+After preparation, start WoW normally through your existing launcher or game manager and verify preparation with `/wtfix status` before using Save or Restore.
+
+The release also includes:
+
+`WTFix-0.9.2-SHA256SUMS.txt`
+
+for verifying the official release packages.
+
+> Do **not** use GitHub's automatically generated **Source code** ZIP/TAR files as WTFix installation packages. Use the named WTFix downloads attached to the release.
+
+CurseForge distributes the addon/runtime separately. GitHub provides the complete Windows and Linux release packages.
 
 ---
 
 ## Updating
 
-### From 0.9.0
+### From 0.9.1
 
-**Update both the WTFix addon/runtime and launcher so the installed components stay on the same release.**
+Update the WTFix addon/runtime and the current package for your platform.
 
-If your existing preparation is healthy, 0.9.1 does not require preparation to be regenerated solely because of this patch.
+**Bridge protocol 1 and snapshot schema 1 are unchanged in 0.9.2.**
 
-Run the launcher again with WoW closed after:
+If your existing Windows preparation is healthy, 0.9.2 does not require preparation to be regenerated solely because of this update.
+
+Refresh preparation with WoW closed after:
 
 - installing a new addon that you want WTFix to protect
 - updating an addon whose SavedVariables declarations may have changed
@@ -43,11 +73,15 @@ Run the launcher again with WoW closed after:
 - changing the selected WoW installation/account
 - or if WTFix shows **SETUP REQUIRED**
 
+**Windows:** run `WTFix Launcher.cmd`.
+
+**Linux:** rerun the Linux preparation tool for the intended installation/account.
+
 ### From 0.8.8
 
-**Update both the WTFix addon/runtime and launcher.**
+Update both the WTFix addon/runtime and current preparation tools.
 
-Then, with WoW completely closed, run the **current launcher once** so WTFix regenerates preparation using the byte-safe SavedVariables handling introduced in 0.9.0.
+Windows users upgrading directly from 0.8.8 should run the current launcher once with WoW completely closed so WTFix regenerates preparation using the byte-safe SavedVariables handling introduced in 0.9.0.
 
 Updating only the addon leaves older generated bootstrap data in place.
 
@@ -88,15 +122,9 @@ WTFix restores the trusted checkpoint and discards unsaved changes for protected
 
 ---
 
-## Windows preparation is required
+## Preparation is required
 
 Installing the addon runtime alone does **not** prepare recovery.
-
-With WoW closed, run:
-
-`WTFix Launcher.cmd`
-
-The launcher prepares the recovery environment, discovers supported addon SavedVariables, verifies the disk bridge, backs up recovery inputs and opens Battle.net.
 
 Until preparation succeeds, WTFix clearly shows:
 
@@ -104,55 +132,106 @@ Until preparation succeeds, WTFix clearly shows:
 
 and keeps **Save** and **Restore** disabled.
 
-After successful preparation:
+### Windows
+
+With WoW closed, run:
+
+`WTFix Launcher.cmd`
+
+The Windows launcher:
+
+- prepares the recovery environment
+- discovers supported addon SavedVariables
+- verifies the disk bridge
+- backs up recovery inputs
+- opens Battle.net when preparation completes
+
+The launcher does **not** remain running in the background.
+
+After successful Windows preparation:
 
 - keep both **WTFix** and **WTFix_Data** enabled
 - normal `/reload` works
 - relogs and full client restarts work
-- the launcher does **not** remain running in the background
-- you do **not** need to run it before every WoW session
+- the launcher does **not** need to run before every normal WoW session
 
-### Installed a new addon and it does not appear in Protected Addons?
+### Linux
+
+Extract the Linux package into a normal user-owned tools folder outside `Interface/AddOns`.
+
+Linux preparation:
+
+- requires Python 3.10+
+- uses explicit game-folder and account selection
+- prepares the WTFix_Data companion and disk bridge
+- creates verified recovery-input backups
+- does not guess your Wine prefix
+- does not choose a Wine/Proton runner
+- does not launch Battle.net or WoW
+- does not install a background service
+
+If you use **Linux Full**, install or update the bundled `AddOn/WTFix` runtime explicitly before applying preparation.
+
+If the runtime is already managed separately, use **Linux Prepare** instead.
+
+After preparation completes:
+
+1. Start WoW normally through your existing launcher or game manager.
+2. Keep both **WTFix** and **WTFix_Data** enabled.
+3. Run `/wtfix status`.
+4. Verify preparation is ready before using Save or Restore.
+
+Native Linux/Wine validation is still pending, so successful filesystem preparation alone is not a universal compatibility claim for every Wine/Proton runner or filesystem.
+
+See the full **[Linux installation and preparation guide](docs/linux-preparation.md)**.
+
+---
+
+## Installed a new addon and it does not appear in Protected Addons?
 
 > [!IMPORTANT]
-> **Close WoW completely and run `WTFix Launcher.cmd` again.**
+> **Close WoW completely and refresh WTFix preparation.**
 
-WTFix discovers supported addon SavedVariables during launcher preparation.
+WTFix discovers supported addon SavedVariables during preparation.
 
 If you install a new addon after WTFix was already prepared — for example **TomTom** or another addon that declares SavedVariables — WTFix may not know about that addon yet.
 
 The normal procedure is:
 
 1. **Close WoW completely.**
-2. Run **`WTFix Launcher.cmd`** again.
+2. Refresh preparation:
+   - **Windows:** run `WTFix Launcher.cmd`.
+   - **Linux:** rerun the Linux preparation tool for the intended installation/account.
 3. Let preparation complete successfully.
-4. Start WoW again through Battle.net.
+4. Start WoW normally.
 5. Open WTFix and check **Protected Addons**.
 
 The newly discovered addon should then be available for protection if it declares SavedVariables that WTFix supports.
 
-**You do not need to reinstall WTFix or create a new WTFix installation. You only need to refresh preparation by running the launcher again.**
+**You do not need to reinstall WTFix. You only need to refresh preparation.**
 
-This is also why the launcher should be run again after installing or updating addons that change their SavedVariables declarations.
+This is also why preparation should be refreshed after installing or updating addons that change their SavedVariables declarations.
 
 If an addon is still missing after successful preparation, use `/wtfix check` and report it so its SavedVariables behavior can be investigated.
 
-See the full [installation guide](docs/installation.md).
-
 ---
 
-## WTFix 0.9.1
-
-![WTFix 0.9.1 — About](docs/images/wtfix-0.9.1-about.png)
+## WTFix 0.9.2
 
 What's new:
 
-- More reliable character-specific recovery when Forever's in-game character name and internal character-folder identity differ.
-- Ambiguous character-directory matches are not guessed.
-- Save validates the complete assembled checkpoint against recovery limits before replacing the previous trusted checkpoint.
-- If complete-checkpoint validation fails, the previous trusted checkpoint remains intact.
+- Added Linux recovery preparation with explicit game-folder/account selection, verified backups and interrupted-preparation recovery.
+- Added dedicated **Linux Full** and **Linux Prepare** release packages.
+- Corrected ZIP paths for portable extraction on Windows and Linux.
+- Aligned the Protected Addons **SNAPSHOT** heading with its values across panel sizes and UI scales.
 
-This is a recovery-hardening release. **Bridge protocol 1 and snapshot schema 1 are unchanged.**
+Linux preparation requires **Python 3.10+**.
+
+Native Linux/Wine validation is still pending.
+
+**Bridge protocol 1 and snapshot schema 1 are unchanged.**
+
+**Save Snapshot remains the explicit way to adopt settings into your trusted checkpoint.**
 
 See the full [changelog](CHANGELOG.md) for previous releases.
 
@@ -162,7 +241,7 @@ See the full [changelog](CHANGELOG.md) for previous releases.
 
 Some addons place runtime objects or methods inside tables that also contain persistent settings.
 
-WTFix 0.9.0 captures the persistable scalar/table data while omitting nested runtime-only `function`, `userdata` and `thread` values.
+WTFix captures the persistable scalar/table data while omitting nested runtime-only `function`, `userdata` and `thread` values.
 
 Those omissions are reported rather than silently hidden.
 
@@ -184,7 +263,7 @@ Existing checkpoint/fallback data is retained.
 
 > **This is different from a newly installed addon that does not appear in Protected Addons at all.**
 >
-> If a newly installed addon is missing from the list, close WoW and run **`WTFix Launcher.cmd` again** so WTFix can refresh its preparation and discover it.
+> If a newly installed addon is missing from the list, close WoW and refresh WTFix preparation for your platform.
 
 ---
 
@@ -322,7 +401,7 @@ Addons such as:
 - Leatrix Maps
 - other addons with their own persistence or Apply/Reload behavior
 
-may show similar symptoms, but their exact persistence behavior is still being investigated.
+may show similar symptoms, but they do **not necessarily have the same cause**.
 
 Do **not** assume that deleting their SavedVariables is the correct fix.
 
@@ -346,7 +425,7 @@ If the addon cannot preserve its own configuration while temporarily excluded fr
 
 A difference is not automatically a problem. Addons may update counters, caches, history and other session data after login.
 
-`/wtfix check` does **not** Save, Restore, reload, or adopt a new checkpoint.
+`/wtfix check` does **not** Save, Restore, reload or adopt a new checkpoint.
 
 ---
 
@@ -363,6 +442,8 @@ or visit:
 Include:
 
 - WTFix version
+- operating system
+- package used
 - affected addon and version
 - `/wtfix status`
 - for Save/capture problems, `/wtfix check`
@@ -370,7 +451,9 @@ Include:
 - whether the addon keeps the intended settings while temporarily excluded from WTFix protection
 - whether the addon has its own Apply/Reload mechanism
 
-If a **newly installed addon is missing entirely from Protected Addons**, first close WoW and rerun **`WTFix Launcher.cmd`**. If it is still missing after successful preparation, include that in the report.
+If a **newly installed addon is missing entirely from Protected Addons**, first close WoW and refresh WTFix preparation for your platform.
+
+If it is still missing after successful preparation, include that in the report.
 
 Review logs and SavedVariables before posting them publicly; they may contain personal data.
 
@@ -393,7 +476,8 @@ This explicit adoption boundary is intentional.
 
 ## Documentation
 
-- [Installation & setup](docs/installation.md)
+- [Windows installation & setup](docs/installation.md)
+- [Linux installation & preparation](docs/linux-preparation.md)
 - [Save, Restore & pending settings](docs/usage.md)
 - [Preparation & ownership](docs/preparation.md)
 - [Troubleshooting](docs/troubleshooting.md)

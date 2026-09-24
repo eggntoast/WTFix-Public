@@ -167,28 +167,25 @@ detailsSub:SetHeight(32)
 detailsSub:SetJustifyV("TOP")
 detailsSub:SetWordWrap(true)
 
-local columnHeader = CreateFrame("Frame", nil, detailsCard)
-columnHeader:SetPoint("TOPLEFT", 16, -76)
-columnHeader:SetPoint("TOPRIGHT", -16, -76)
-columnHeader:SetHeight(18)
-
-local addonHeader = ns.UI_CreateLabel(columnHeader, "ADDON", true, T.fonts.tiny)
-addonHeader:SetPoint("LEFT", 5, 0)
-addonHeader:SetPoint("RIGHT", columnHeader, "RIGHT", -164, 0)
-
-local statusHeader = ns.UI_CreateLabel(columnHeader, "SNAPSHOT", true, T.fonts.tiny)
-statusHeader:SetWidth(98)
-statusHeader:SetPoint("RIGHT", columnHeader, "RIGHT", -64, 0)
-
-local versionHeader = ns.UI_CreateLabel(columnHeader, "VERSION", true, T.fonts.tiny)
-versionHeader:SetWidth(58)
-versionHeader:SetPoint("RIGHT", -4, 0)
-versionHeader:SetJustifyH("RIGHT")
-
 local rowsScroll = ns.UI_CreateScroll(detailsCard)
 rowsScroll:SetPoint("TOPLEFT", 16, -96)
 rowsScroll:SetPoint("BOTTOMRIGHT", -12, 14)
 local rowsFrame = rowsScroll.child
+
+local columnHeader = CreateFrame("Frame", nil, detailsCard)
+-- Match the visible row viewport, excluding the scrollbar rail and its gap.
+columnHeader:SetPoint("TOPLEFT", rowsScroll.scroll, "TOPLEFT", 0, 20)
+columnHeader:SetPoint("TOPRIGHT", rowsScroll.scroll, "TOPRIGHT", 0, 20)
+columnHeader:SetHeight(18)
+
+local addonHeader = ns.UI_CreateLabel(columnHeader, "ADDON", true, T.fonts.tiny)
+addonHeader:SetPoint("LEFT", 5, 0)
+addonHeader:SetPoint("RIGHT", columnHeader, "RIGHT", -ns.UI_AddonColumnInset, 0)
+
+local statusHeader = ns.UI_CreateLabel(columnHeader, "SNAPSHOT", true, T.fonts.tiny)
+
+local versionHeader = ns.UI_CreateLabel(columnHeader, "VERSION", true, T.fonts.tiny)
+ns.UI_AnchorAddonColumns(columnHeader, statusHeader, versionHeader)
 
 local detailRows = {}
 

@@ -139,7 +139,7 @@ function ns.GetStatusPresentation(checkLive)
     local summary = ns.GetStatusSummary(checkLive)
 
     if summary.state == "SETUP_REQUIRED" then
-        return { state="SETUP_REQUIRED", label="SETUP REQUIRED", kind="danger", compact="Run the launcher",
+        return { state="SETUP_REQUIRED", label="SETUP REQUIRED", kind="danger", compact="Run setup",
             detail=ns.GetPreparationState().reason, summary=summary, warningDetails=summary.warningDetails }
     end
     if ns.pendingReload then
@@ -195,10 +195,10 @@ function ns.GetStatusPresentation(checkLive)
     elseif state == "NO_LAUNCHER" then
         return {
             state = state,
-            label = "Launcher not detected",
+            label = "Setup not detected",
             kind = "warning",
             compact = "Cold-start recovery unavailable",
-            detail = "Launch through WTFix Launcher.cmd for cold-start recovery.",
+            detail = "Run the WTFix setup tool with WoW closed to prepare recovery.",
             summary = summary,
             warningDetails = summary.warningDetails,
         }

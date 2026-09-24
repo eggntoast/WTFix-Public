@@ -2,7 +2,17 @@
 
 ## SETUP REQUIRED
 
-Close WoW and run the current compatible launcher for the correct installation/account.
+Preparation has not been accepted for the current installation/account.
+
+### Windows
+
+Close WoW and run the current compatible:
+
+`WTFix Launcher.cmd`
+
+### Linux
+
+Close WoW and run the current Linux preparation tool again using the intended game folder and exact account.
 
 Keep WTFix_Data enabled.
 
@@ -37,7 +47,7 @@ When reporting a problem, include the complete `/wtfix check` output and exact a
 
 ## Runtime-only values
 
-WTFix 0.9.0 can omit nested runtime-only `function`, `userdata` and `thread` values while retaining ordinary persistent scalar/table data.
+WTFix can omit nested runtime-only `function`, `userdata` and `thread` values while retaining ordinary persistent scalar/table data.
 
 These omissions are reported.
 
@@ -45,9 +55,9 @@ Unsupported roots, unsafe keys, cycles and structural/resource failures still bl
 
 ## Binary or non-UTF-8 SavedVariables
 
-0.9.0 fixes an older launcher behavior that could transcode binary or non-UTF-8 SavedVariables source.
+Current preparation preserves SavedVariables source as raw bytes.
 
-When upgrading from 0.8.8:
+When upgrading directly from 0.8.8 on Windows:
 
 1. update the runtime
 2. update the launcher
@@ -56,7 +66,7 @@ When upgrading from 0.8.8:
 
 Updating only the addon does not regenerate old bootstrap preparation.
 
-0.9.0 prevents new encoding corruption. It cannot reconstruct already-corrupted data. Preserve known-good backups.
+Current preparation prevents new encoding corruption. It cannot reconstruct already-corrupted data. Preserve known-good backups.
 
 ## Installed addon shows Not loaded
 
@@ -68,25 +78,61 @@ Existing checkpoint/fallback data is retained.
 
 This condition does not by itself count as active missing recovery coverage.
 
+## Newly installed addon is missing from Protected Addons
+
+Close WoW completely and refresh preparation.
+
+### Windows
+
+Run:
+
+`WTFix Launcher.cmd`
+
+### Linux
+
+Run the Linux preparation tool again for the intended installation/account.
+
+You do not need to reinstall WTFix simply because a newly installed addon was not present during earlier preparation.
+
 ## Missing runtime or incompatible version
 
-Launcher-only does not include the runtime.
+The Windows Launcher package and Linux Prepare package do not contain the WTFix runtime.
 
-Install the runtime through CurseForge or manual installation, or use Full when the runtime is absent.
+Install the runtime through CurseForge/manual installation or use the appropriate Full package when the runtime is absent.
 
-Existing compatible runtimes are not replaced by ordinary launcher preparation.
+Existing compatible runtimes are not replaced by ordinary preparation.
 
-## Preparation fails
+## Windows preparation fails
 
 Read the launcher error and:
 
 `%LOCALAPPDATA%\WTFix\WTFix-last.log`
 
-Confirm the WoW location and that WoW is closed.
+Confirm:
 
-Use `Change WoW Location.cmd` if necessary.
+- the correct WoW location
+- the intended account
+- WoW is fully closed
+
+Use `Change WoW Location.cmd` when necessary.
 
 Do not delete snapshots or SavedVariables simply to suppress an error.
+
+## Linux preparation fails
+
+Confirm:
+
+- Python 3.10 or newer is available
+- the selected folder is the Forever folder containing `WowB.exe`
+- the exact intended account folder was supplied
+- WoW is fully closed
+- the game and state paths are writable by the current user
+
+If `.wtfix-preparation.lock` remains after an interrupted preparation, keep WoW closed and follow the rollback procedure in the [Linux guide](linux-preparation.md).
+
+Do **not** delete the lock simply to bypass a conflict.
+
+Do **not** delete another addon's SavedVariables as a generic repair.
 
 ## Settings revert
 
@@ -108,13 +154,19 @@ A differing path does not automatically mean recovery failed.
 
 ## Getting help
 
-Open `/wtfix → About → Report a Bug` or visit:
+Open:
+
+`/wtfix → About → Report a Bug`
+
+or visit:
 
 https://github.com/eggntoast/WTFix-Public/issues
 
 Include:
 
 - WTFix version
+- operating system
+- package used
 - affected addon and version
 - `/wtfix status`
 - `/wtfix check` for Save/capture issues

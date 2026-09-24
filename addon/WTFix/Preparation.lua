@@ -19,12 +19,12 @@ local function normalizeName(value) return tostring(value or ""):gsub(" ", ""):g
 function ns.InitializePreparation()
     if ns.preparation then return ns.preparation end
     local p = WTFIX_PREPARATION
-    if type(p) ~= "table" then return reject("ABSENT", "Run WTFix Launcher with WoW closed to prepare recovery.") end
-    if p.protocol ~= ns.bridgeProtocol then return reject("PROTOCOL", "Update the WTFix runtime and launcher to compatible versions, then run setup.") end
+    if type(p) ~= "table" then return reject("ABSENT", "Run the WTFix setup tool with WoW closed to prepare recovery.") end
+    if p.protocol ~= ns.bridgeProtocol then return reject("PROTOCOL", "Update the WTFix runtime and setup tool to compatible versions, then run setup.") end
     if type(p.id) ~= "string" or not p.id:match("^%x+$") or #p.id ~= 32
         or p.binding ~= "unique-character-name" or type(p.characters) ~= "table"
         or type(p.bootstrap) ~= "function" then
-        return reject("METADATA", "Preparation metadata is invalid. Run the launcher again.")
+        return reject("METADATA", "Preparation metadata is invalid. Run the setup tool again.")
     end
     if p.completed ~= true then return reject("INCOMPLETE", "The preparation companion did not finish loading. Run setup again.") end
     local e = p.evidence
@@ -49,7 +49,7 @@ function ns.InitializePreparation()
             matchedCharacter = { realm = character.realm, name = character.name }
         end
     end
-    if matches ~= 1 then return reject("CHARACTER", "This character name is not uniquely prepared. Exit WoW and run the launcher for the correct account.") end
+    if matches ~= 1 then return reject("CHARACTER", "This character name is not uniquely prepared. Exit WoW and run the setup tool for the correct account.") end
     local ok = pcall(p.bootstrap, ns)
     local b = WTFIX_BOOTSTRAP
     if not ok or type(b) ~= "table" or b.generated ~= true or type(b.targets) ~= "table"

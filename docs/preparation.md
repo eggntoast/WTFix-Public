@@ -1,66 +1,112 @@
 # Preparation, ownership and limitations
 
-## What the launcher does
+## What preparation does
 
-With WoW closed, preparation checks runtime/bridge compatibility, selects the account, archives existing Lua recovery inputs, prepares WTFix_Data and manages dependency entries in relevant addon TOCs.
+With WoW closed, preparation:
 
-It then opens Battle.net on Forever Beta and displays successful completion.
+- checks runtime and bridge compatibility
+- selects the intended account
+- archives existing recovery inputs
+- prepares WTFix_Data
+- manages dependency entries in relevant addon TOCs
+- verifies the disk bridge and generated preparation data
 
-Preparation does not need a resident helper. It does not modify WoW executables or inject code.
+On **Windows**, the launcher then opens Battle.net on Forever Beta and displays successful completion.
+
+On **Linux**, the preparation tool completes setup only. It does not launch Battle.net, Wine, Proton or WoW.
+
+Preparation does not require a resident helper. It does not modify WoW executables or inject code.
 
 ## Why there are two addons
 
-- **WTFix** is the runtime, owned by its addon manager or manual installer.
-- **WTFix_Data** is the launcher's companion, containing generated preparation and a `Disk` directory junction pointing to the selected account's SavedVariables directory.
+- **WTFix** is the in-game runtime, owned by its addon manager or manual installer.
+- **WTFix_Data** is the preparation-owned companion and disk bridge.
 
-Keep both enabled.
+Keep both enabled after successful preparation.
 
-Installing the runtime alone does not prepare the bridge.
+On Windows, the companion uses a directory junction named `Disk`.
+
+On Linux, the companion uses a POSIX directory symlink named `Disk`.
+
+Both point to the selected account's SavedVariables directory.
+
+Installing the WTFix runtime alone does not prepare recovery.
 
 ## Byte-safe SavedVariables preparation
 
-WTFix 0.9.0 reads SavedVariables source files as raw bytes when generating recovery bootstrap data.
+WTFix reads SavedVariables source as raw bytes when generating recovery bootstrap data.
 
-Binary and non-UTF-8 string data is embedded without character-set transcoding. This matters for addons that store compact or binary data inside SavedVariables.
+Binary and non-UTF-8 data is preserved without character-set transcoding.
 
-An optional UTF-8 BOM is accepted. UTF-16 source is rejected rather than silently transcoded.
+An optional UTF-8 BOM is accepted. UTF-16 input is rejected rather than silently converted.
 
-When updating from 0.8.8, run the current launcher once with WoW closed so preparation is regenerated.
-
-This prevents new corruption. It cannot reconstruct data already corrupted by an older generated preparation.
+This prevents new encoding corruption. It cannot reconstruct data already corrupted by older preparation.
 
 ## Trust and compatibility
 
-Bridge protocol 1 is independent of the WTFix product version.
+Product version, bridge protocol and snapshot schema are separate contracts.
+
+WTFix 0.9.2 continues to use:
+
+- bridge protocol **1**
+- snapshot schema **1**
 
 The runtime requires valid preparation metadata, a supported protocol, completed disk input, matching preparation identifiers and a prepared character match before trusting recovery.
 
-Among valid snapshot candidates, the highest generation wins. Current/native wins ties, followed by disk and bootstrap.
+If preparation cannot be trusted, WTFix fails closed with:
 
-Launcher bootstrap data is fallback input. It does not silently become a new trusted checkpoint.
+**SETUP REQUIRED**
+
+Preparation/bootstrap data is recovery input. It does not silently become a new trusted checkpoint.
+
+**Save Snapshot remains the explicit adoption boundary.**
 
 ## When to prepare again
 
-Close WoW and rerun the launcher after:
+Close WoW and refresh preparation after:
 
-- adding or updating managed addons
+- installing a new addon that you want WTFix to protect
+- updating an addon whose SavedVariables declarations may have changed
 - changing the installation or selected account
 - adding characters requiring preparation
 - preparation being missing or rejected
 - a release explicitly requiring regenerated preparation
 
-Setup archives inputs present when it runs. It is not a continuous backup system.
+Preparation does not need to run before every normal WoW session.
 
 ## Ownership and removal
 
-Ordinary launcher operation never replaces an installed compatible runtime. Full installs one only when the runtime is absent.
+Ordinary preparation never replaces an installed compatible runtime.
 
 Updating the runtime remains the responsibility of its addon manager or manual installer.
 
-The current uninstaller removes WTFix_Data and managed dependency entries. It preserves the runtime, SavedVariables, marker and local history/configuration.
+### Windows
 
-Remove the runtime separately through its manager when desired.
+The current Windows uninstaller removes WTFix_Data and managed dependency entries.
 
-Avoid recursive deletion through the Disk junction.
+It preserves:
 
-Logs, configuration and preparation backups are kept under `%LOCALAPPDATA%\WTFix`. Review them for personal paths or data before sharing.
+- the WTFix runtime
+- SavedVariables
+- the preparation marker
+- local history/configuration
+
+Windows logs, configuration and preparation backups are kept under:
+
+`%LOCALAPPDATA%\WTFix`
+
+### Linux
+
+Linux preparation does not install, update or downgrade the WTFix runtime.
+
+Private preparation state defaults to:
+
+`$XDG_STATE_HOME/wtfix`
+
+or, when `XDG_STATE_HOME` is unset:
+
+`~/.local/state/wtfix`
+
+Linux 0.9.2 does not include an automatic uninstall workflow. See the [Linux installation and preparation guide](linux-preparation.md) before changing prepared files manually.
+
+Review logs, backups and SavedVariables before sharing them publicly because they may contain personal paths or addon data.
