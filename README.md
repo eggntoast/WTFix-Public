@@ -214,7 +214,6 @@ Character linking does not capture live settings, Save Snapshot or advance the t
 **Bridge protocol 1 and snapshot schema 1 are unchanged.**
 
 ---
----
 
 ## Addons with runtime-only values
 
