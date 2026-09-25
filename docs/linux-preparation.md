@@ -161,8 +161,6 @@ personal information before posting; do not attach private backup objects.
 
 [Report a bug](https://github.com/eggntoast/WTFix-Public/issues)
 
-NS
-
 ## Character linking after an update
 
 Forever may provide the player GUID before it provides the character name on a
@@ -200,3 +198,5 @@ Do not delete SavedVariables to resolve a link problem. Keep both WTFix and WTFi
 preparation data enabled. An incompatible bridge or genuinely missing preparation
 still requires setup with WoW closed. Existing compatible preparation need not be
 rerun just to install this runtime update.
+
+NS

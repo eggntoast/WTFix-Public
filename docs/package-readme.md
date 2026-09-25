@@ -97,8 +97,6 @@ problem. The About page provides a copyable Report a Bug link.
 
 See the included [changelog](CHANGELOG.md) for release changes.
 
-NS
-
 ## Character linking after an update
 
 Forever may provide the player GUID before it provides the character name on a
@@ -136,3 +134,5 @@ Do not delete SavedVariables to resolve a link problem. Keep both WTFix and WTFi
 preparation data enabled. An incompatible bridge or genuinely missing preparation
 still requires setup with WoW closed. Existing compatible preparation need not be
 rerun just to install this runtime update.
+
+NS

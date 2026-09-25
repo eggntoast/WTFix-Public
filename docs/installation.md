@@ -31,13 +31,14 @@ Full installs the runtime only when `Interface/AddOns/WTFix` is absent. It prese
 
 The Launcher package contains no runtime. Installing the CurseForge addon by itself does not prepare recovery.
 
-## Updating from 0.9.1
+## Updating from 0.9.2
 
 Update the WTFix runtime and the current Windows package.
 
 Bridge protocol 1 and snapshot schema 1 are unchanged in 0.9.3.
 
 If your existing preparation is healthy, preparation does not need to be regenerated solely because of the 0.9.3 update.
+After updating, some existing Forever characters may show **Link required** once. Click **Link Character**, select the saved character record you recognize, confirm the link, then reload once. Linking does not Save Snapshot, merge character records or advance the trusted checkpoint generation.
 
 Run preparation again with WoW closed after:
 

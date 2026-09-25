@@ -4,7 +4,7 @@
 
 WTFix lets you save a working copy of your addon settings and restore it later if something gets reset, overwritten or otherwise goes wrong.
 
-![WTFix — Recovery](docs/images/wtfix-0.9.1-recovery.png)
+![WTFix — Recovery](docs/images/wtfix-0.9.3-recovery.png)
 
 WTFix keeps using that saved snapshot until **you** choose to replace it with a new one.
 
@@ -40,7 +40,7 @@ Linux preparation uses explicit game-folder and account selection. It does **not
 
 After preparation, start WoW normally through your existing launcher or game manager and verify preparation with `/wtfix status` before using Save or Restore.
 
-SHA256 hashes for the official release packages are listed in the **[WTFix 0.9.2 release notes](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.3)**.
+SHA256 hashes for the official release packages are listed in the **[WTFix 0.9.3 release notes](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.3)**.
 
 > Do **not** use GitHub's automatically generated **Source code** ZIP/TAR files as WTFix installation packages. Use the named WTFix downloads attached to the release.
 
@@ -59,6 +59,7 @@ Bridge protocol 1 and snapshot schema 1 are unchanged, so existing Windows and L
 Some existing Forever characters may be asked once to **Link Character** when WTFix finds more than one compatible saved character record. Choose the saved record you recognize and reload once.
 
 Linking does not Save Snapshot, merge records or replace the trusted checkpoint.
+
 ### From 0.8.8
 
 Update both the WTFix addon/runtime and current preparation tools.
@@ -213,23 +214,6 @@ Character linking does not capture live settings, Save Snapshot or advance the t
 **Bridge protocol 1 and snapshot schema 1 are unchanged.**
 
 ---
-## WTFix 0.9.2
-
-What's new:
-
-- Added Linux recovery preparation with explicit game-folder/account selection, verified backups and interrupted-preparation recovery.
-- Added dedicated **Linux Full** and **Linux Prepare** release packages.
-- Corrected ZIP paths for portable extraction on Windows and Linux.
-- Aligned the Protected Addons **SNAPSHOT** heading with its values across panel sizes and UI scales.
-
-Linux preparation requires **Python 3.10+**.
-
-**Bridge protocol 1 and snapshot schema 1 are unchanged.**
-
-**Save Snapshot remains the explicit way to adopt settings into your trusted checkpoint.**
-
-See the full [changelog](CHANGELOG.md) for previous releases.
-
 ---
 
 ## Addons with runtime-only values

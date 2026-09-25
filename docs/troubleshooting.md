@@ -1,5 +1,46 @@
 # Troubleshooting
 
+## Checking identity
+
+WTFix is waiting for WoW Forever to expose the current character identity.
+
+Recovery has not been applied for this login while this state is active. Do not Save replacement settings simply to clear the message.
+
+If the state does not resolve after login finishes, preserve the current recovery data and include `/wtfix status` in a bug report.
+
+## Link required
+
+WTFix has identified the character but needs an explicit association with an existing saved character record.
+
+Click **Link Character** and select the record you recognize by its stored name, last-saved time and generation.
+
+No record is selected automatically. Do not choose a record merely because it has the highest generation.
+
+Linking:
+
+- does not Save Snapshot
+- does not capture current addon settings
+- does not merge or delete character records
+- does not advance the trusted snapshot generation
+
+After a successful link, WTFix will show **Reload required**.
+
+## Reload required
+
+Click **Reload Now** when you are ready.
+
+After Character Linking, the reload allows WTFix to use the confirmed character association during the early recovery window before protected addons initialize.
+
+If Reload required follows a Save or Restore operation instead, complete that pending reload before starting another recovery action.
+
+## Recovery blocked
+
+Click **View Problem** and follow the reason-specific guidance.
+
+A blocked recovery state means WTFix found a conflict or recovery input that it cannot safely accept. Preserve the existing recovery files and trusted checkpoint.
+
+Do not Save a replacement snapshot, delete SavedVariables or guess another character record merely to clear the blocked state.
+
 ## SETUP REQUIRED
 
 Preparation has not been accepted for the current installation/account.
