@@ -15,7 +15,7 @@ import re
 import stat
 import uuid
 
-VERSION = "0.9.2"
+VERSION = "0.9.3"
 PROTOCOL = 1
 TEMPLATE_FILES = {"Begin.lua", "End.lua", "BootstrapData.lua", "WTFix_Data.toc"}
 LOCK = ".wtfix-preparation.lock"

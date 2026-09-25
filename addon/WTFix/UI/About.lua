@@ -25,10 +25,10 @@ function ns.UI_CreateAboutPage(parent)
     local title = label("What's New in " .. ns.version, T.fonts.section, false)
     title:SetTextColor(unpack(C.accentBright))
     local changes = {
-        "Added Linux preparation support.",
-        "Added dedicated Linux Full and Prepare packages.",
-        "Improved cross-platform ZIP portability.",
-        "Fixed Protected Addons SNAPSHOT column alignment.",
+        "Fixed character recognition on a fresh client start.",
+        "Added safe character linking for early recovery.",
+        "Preserved existing checkpoints across name formats.",
+        "Clearer character setup and recovery status.",
     }
     local items = {}
     for index, text in ipairs(changes) do

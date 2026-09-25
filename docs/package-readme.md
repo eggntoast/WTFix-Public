@@ -1,15 +1,15 @@
-# WTFix 0.9.2
+# WTFix 0.9.3
 
 SavedVariables recovery for WoW Forever.
 
 ## Choose the right package
 
-- **WTFix-Full-0.9.2.zip:** Windows launcher, preparation companion and addon.
-- **WTFix-Launcher-0.9.2.zip:** Windows launcher and companion for users who already
+- **WTFix-Full-0.9.3.zip:** Windows launcher, preparation companion and addon.
+- **WTFix-Launcher-0.9.3.zip:** Windows launcher and companion for users who already
   installed the addon through an addon manager.
-- **WTFix-Addon-0.9.2.zip:** addon only. Installing the addon alone does not prepare recovery.
-- **WTFix-Linux-Full-0.9.2.zip:** Linux preparation tools and addon.
-- **WTFix-Linux-Prepare-0.9.2.zip:** Linux preparation tools for an existing addon installation.
+- **WTFix-Addon-0.9.3.zip:** addon only. Installing the addon alone does not prepare recovery.
+- **WTFix-Linux-Full-0.9.3.zip:** Linux preparation tools and addon.
+- **WTFix-Linux-Prepare-0.9.3.zip:** Linux preparation tools for an existing addon installation.
 
 Linux users: follow `README.md` inside the Linux package. It uses the included
 `prepare.py` and requires Python 3.10 or newer. Start the game through your usual
@@ -98,3 +98,41 @@ problem. The About page provides a copyable Report a Bug link.
 See the included [changelog](CHANGELOG.md) for release changes.
 
 NS
+
+## Character linking after an update
+
+Forever may provide the player GUID before it provides the character name on a
+fresh client start. WTFix can use a previously verified character link to recover
+at that early point. A missing link is different from a broken disk bridge.
+
+If WTFix shows **Link required**:
+
+1. Open WTFix and click **Link Character** beside the status indicator.
+2. Select the saved character record you recognize, checking its stored name,
+   last-saved time and generation, then click **Link Selected Record**. No record
+   is selected automatically. If you are unsure, cancel and ask for help; a higher
+   generation alone does not prove that a record belongs to this character.
+3. Choose **Reload Now** to apply recovery before other addons initialize. **Later**
+   closes the prompt and leaves recovery pending; the header keeps a reload action.
+   Reloading can replace current unsaved addon changes with saved settings.
+
+**Details** shows read-only recovery information. **Setup Help** or **View Problem**
+explains a blocked state and the appropriate next step. A dash for Last saved, or
+**Not checked** beside an addon, means its recovery data has not been qualified;
+it does not mean the saved data is gone. Detected addons is a manifest count, not
+confirmation that recovery was applied.
+
+Advanced fallback: `/wtfix bind` lists records; `/wtfix bind NUMBER` opens an explicit
+confirmation. These commands use the same link checks as the GUI.
+
+Linking does not capture current settings, advance the snapshot generation, merge
+character records or delete older records. It retains the selected whole checkpoint
+for the next startup. **Save Snapshot** remains the only way to adopt live settings.
+The link is checked against the current GUID, full name when available, prepared
+roster and native realm. It does not establish account ownership. Conflicting links
+or ambiguous prepared names block recovery instead of guessing.
+
+Do not delete SavedVariables to resolve a link problem. Keep both WTFix and WTFix
+preparation data enabled. An incompatible bridge or genuinely missing preparation
+still requires setup with WoW closed. Existing compatible preparation need not be
+rerun just to install this runtime update.

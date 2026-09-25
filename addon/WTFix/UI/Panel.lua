@@ -41,12 +41,24 @@ versionMeta:SetWidth(170)
 versionMeta:SetJustifyH("RIGHT")
 
 local statePill = ns.UI_CreateStatusPill(header)
-statePill:SetPoint("TOPRIGHT", 0, -36)
-
-local headerDetail = ns.UI_CreateLabel(header, "", true, T.fonts.tiny)
-headerDetail:SetPoint("RIGHT", statePill, "LEFT", -10, 0)
-headerDetail:SetWidth(150)
-headerDetail:SetJustifyH("RIGHT")
+local headerAction = ns.UI_CreateButton(header, "Details", 130, "secondary")
+headerAction:SetHeight(28)
+headerAction:SetScript("OnClick", function() ns.RunRecoveryAction() end)
+local function layoutHeader()
+    statePill:ClearAllPoints(); headerAction:ClearAllPoints()
+    -- Keep the brand and action distinct on the narrower Settings layouts.
+    if header:GetWidth() < 610 then
+        statePill:SetPoint("TOPRIGHT", 0, -36)
+        headerAction:SetPoint("TOPRIGHT", 0, -67)
+        header:SetHeight(math.max(M.headerHeight, 106))
+    else
+        headerAction:SetPoint("TOPRIGHT", 0, -35)
+        statePill:SetPoint("RIGHT", headerAction, "LEFT", -8, 0)
+        header:SetHeight(M.headerHeight)
+    end
+end
+header:SetScript("OnSizeChanged", layoutHeader)
+layoutHeader()
 
 local headerLine = header:CreateTexture(nil, "BORDER")
 headerLine:SetPoint("BOTTOMLEFT")
@@ -104,7 +116,7 @@ statusCard:SetPoint("RIGHT", recoveryPage, "RIGHT", -(rightWidth + M.gap), 0)
 local statusTitle = ns.UI_CreateSectionTitle(statusCard, "Status")
 statusTitle:SetPoint("TOPLEFT", 16, -14)
 
-local statusLabels = {}
+local statusLabels, statusTitles = {}, {}
 local function addStatusRow(key, titleText, y)
     local left = ns.UI_CreateLabel(statusCard, titleText, true, T.fonts.bodySmall)
     left:SetPoint("TOPLEFT", 16, y)
@@ -114,13 +126,13 @@ local function addStatusRow(key, titleText, y)
     right:SetPoint("TOPLEFT", 146, y)
     right:SetPoint("RIGHT", -14, 0)
     right:SetJustifyH("LEFT")
-    statusLabels[key] = right
+    statusLabels[key], statusTitles[key] = right, left
 end
 
 addStatusRow("addons", "Protected addons", -40)
 addStatusRow("source", "Recovery source", -61)
 addStatusRow("saved", "Last saved", -82)
-addStatusRow("character", "Current character", -103)
+addStatusRow("character", "Character link", -103)
 addStatusRow("cold", "Cold-start recovery", -124)
 
 local actionCard = ns.UI_CreateCard(recoveryPage, topHeight, true, true)
@@ -217,24 +229,6 @@ local function colorForKind(kind)
     return C.muted
 end
 
-local function currentCharacterState(snapshot, characterKey)
-    if not ns.CanSave() then return "Not prepared", "warning" end
-    local needsCharacterData = false
-    for addon, target in pairs(ns.GetTargets()) do
-        if ns.IsProtectedAddon(addon) and ns.IsAddonLoaded(addon) and type(target.character) == "table" and #target.character > 0 then
-            needsCharacterData = true
-            break
-        end
-    end
-
-    if not needsCharacterData then return "Not required", "muted" end
-    if not characterKey then return "Unavailable", "warning" end
-    local record = snapshot and snapshot.characters and snapshot.characters[characterKey]
-    if record and type(record.addons) == "table" then return "Saved", "success" end
-    if snapshot then return "Not saved", "warning" end
-    return "Fallback", "muted"
-end
-
 local function clearRows()
     for _, row in ipairs(detailRows) do row:Hide() end
 end
@@ -262,9 +256,11 @@ local function refreshRows()
         row:Show()
         row:SetAlternate(index % 2 == 0)
         row.toggle:SetChecked(ns.IsProtectedAddon(addonName))
+        row.toggle:SetEnabledState(ns.CanSave())
         if row.toggle.__label then row.toggle.__label:SetText(addonName) end
 
         row.toggle.OnValueChanged = function(self, checked)
+            if not ns.CanSave() then return end
             if checked then
                 WTFIX_DB.protectedAddons[addonName] = nil
             else
@@ -274,6 +270,7 @@ local function refreshRows()
         end
 
         local textValue, kind = statusTextForAddon(addonName, ns.GetTargets()[addonName], snapshot, characterKey)
+        if not ns.CanSave() then textValue, kind = "Not checked", "muted" end
         row.status:SetText(textValue)
         local color = colorForKind(kind)
         row.status:SetTextColor(color[1], color[2], color[3], color[4] or 1)
@@ -293,52 +290,31 @@ local function refreshRows()
 end
 
 local function updateStatus(checkLive)
-    local presentation = ns.GetStatusPresentation(checkLive)
-    local summary = presentation.summary
-    local state = summary.state
-
-    if ns.CanSave() and not checkLive and not ns.pendingReload and ns.HasSnapshot() and state ~= "WARNING" and state ~= "PARTIAL" and state ~= "NO_LAUNCHER" and C_Timer and C_Timer.After then
-        statePill:SetStatus("Checking", "warning")
-        C_Timer.After(0, function()
-            if panel:IsShown() then panel:Refresh(true) end
-        end)
-    else
-        statePill:SetStatus(presentation.label, presentation.kind)
-    end
-
-    statusLabels.addons:SetText(tostring(summary.protectedAddons))
-    local sourceLabel = summary.source == "disk" and "Disk bridge" or (summary.source == "native" and "Native" or (summary.source == "bootstrap" and "Bootstrap" or "None"))
-    statusLabels.source:SetText(sourceLabel)
-    statusLabels.saved:SetText(summary.lastSaved)
-    statusLabels.cold:SetText(ns.CanSave() and "Ready" or "SETUP REQUIRED")
-
-    local snapshot = ns.GetAuthoritativeSnapshot()
-    local characterText, characterKind = currentCharacterState(snapshot, ns.GetCharacterKey())
-    statusLabels.character:SetText(characterText)
-    local characterColor = colorForKind(characterKind)
-    statusLabels.character:SetTextColor(characterColor[1], characterColor[2], characterColor[3], characterColor[4] or 1)
-
-    if ns.HasSnapshot() then
-        statusLabels.source:SetTextColor(C.success[1], C.success[2], C.success[3], C.success[4])
-    else
-        statusLabels.source:SetTextColor(C.muted[1], C.muted[2], C.muted[3], C.muted[4])
-    end
-    statusLabels.cold:SetTextColor(
-        summary.launcherDetected and C.success[1] or C.warning[1],
-        summary.launcherDetected and C.success[2] or C.warning[2],
-        summary.launcherDetected and C.success[3] or C.warning[3],
-        1
-    )
-
+    local view = ns.GetRecoveryView(checkLive)
+    statePill:SetStatus(view.status, view.kind)
+    headerAction:SetButtonText(view.actionLabel)
+    statusTitles.addons:SetText(view.countLabel)
+    statusLabels.addons:SetText(view.count)
+    statusLabels.source:SetText(view.source)
+    statusLabels.saved:SetText(view.saved)
+    statusLabels.character:SetText(view.link)
+    statusLabels.cold:SetText(view.cold)
+    local color = colorForKind(view.kind)
+    statusLabels.character:SetTextColor(color[1], color[2], color[3], 1)
+    statusLabels.cold:SetTextColor(color[1], color[2], color[3], 1)
     saveButton:SetEnabledState(ns.CanSave())
     restoreButton:SetEnabledState(ns.CanRestore())
-    detailsSub:SetText(ns.CanSave()
-        and "Saved means a checkpoint exists. Not loaded addons are not captured; existing data is retained. /wtfix diff compares live settings."
-        or ns.GetPreparationState().reason)
-
-    headerDetail:SetText(presentation.compact or "")
-    local hintColor = colorForKind(presentation.kind)
-    headerDetail:SetTextColor(hintColor[1], hintColor[2], hintColor[3], hintColor[4] or 1)
+    minimapToggle:SetEnabledState(view.editable)
+    chatToggle:SetEnabledState(view.editable)
+    detailsSub:SetText(view.explanation or "Saved means a checkpoint exists. Details shows recovery information.")
+    local textHeight = math.max(32, detailsSub:GetStringHeight())
+    detailsSub:SetHeight(textHeight)
+    rowsScroll:ClearAllPoints()
+    rowsScroll:SetPoint("TOPLEFT", 16, -(64 + textHeight))
+    rowsScroll:SetPoint("BOTTOMRIGHT", -12, 14)
+    if view.editable and not checkLive and C_Timer and C_Timer.After then
+        C_Timer.After(0, function() if panel:IsShown() then panel:Refresh(true) end end)
+    end
 
     minimapToggle:SetChecked(not WTFIX_DB.minimap.hide)
     chatToggle:SetChecked(WTFIX_DB.chatStatus ~= false)
@@ -428,6 +404,7 @@ restoreButton:SetScript("OnClick", function()
 end)
 
 minimapToggle.OnValueChanged = function(_, checked)
+    if not ns.CanSave() then return end
     if ns.SetMinimapVisible then
         ns.SetMinimapVisible(checked)
     else
@@ -436,6 +413,7 @@ minimapToggle.OnValueChanged = function(_, checked)
 end
 
 chatToggle.OnValueChanged = function(_, checked)
+    if not ns.CanSave() then return end
     WTFIX_DB.chatStatus = checked and true or false
 end
 

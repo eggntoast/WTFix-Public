@@ -36,29 +36,15 @@ broker.OnClick = function(_, button)
 end
 
 broker.OnTooltipShow = function(tooltip)
-    local presentation = ns.GetStatusPresentation and ns.GetStatusPresentation(true) or nil
-    local summary = presentation and presentation.summary or (ns.GetStatusSummary and ns.GetStatusSummary(true) or {})
-
+    local presentation = ns.GetStatusPresentation(true)
+    local view = ns.GetRecoveryView(false)
+    local summary = view.summary
     tooltip:AddLine("WTFix", 0.4, 0.85, 1)
-    if presentation then
-        local r, g, b = tooltipColor(presentation.kind)
-        tooltip:AddLine(presentation.label, r, g, b)
-        if presentation.compact and presentation.compact ~= "" then
-            tooltip:AddLine(presentation.compact, 0.70, 0.76, 0.82)
-        end
-        if presentation.state == "SETUP_REQUIRED" or (summary.differences and summary.differences.addonCount > 0) then
-            tooltip:AddLine(presentation.detail, 0.70, 0.76, 0.82, true)
-        end
-    else
-        tooltip:AddLine(ns.HasSnapshot() and "Snapshot saved" or "No saved snapshot", 0.85, 0.9, 0.95)
-    end
-
-    if summary.lastSaved then
-        tooltip:AddLine("Last saved: " .. summary.lastSaved, 0.62, 0.69, 0.76)
-    end
-    if summary.source then
-        tooltip:AddLine("Recovery source: " .. tostring(summary.source), 0.62, 0.69, 0.76)
-    end
+    local r, g, b = tooltipColor(view.kind)
+    tooltip:AddLine(view.status, r, g, b)
+    tooltip:AddLine(view.explanation or "", 0.70, 0.76, 0.82, true)
+    tooltip:AddLine("Last saved: " .. view.saved, 0.62, 0.69, 0.76)
+    tooltip:AddLine("Recovery source: " .. view.source, 0.62, 0.69, 0.76)
     if (summary.unloadedAddonCount or 0) > 0 then
         tooltip:AddLine("Not loaded: " .. summary.unloadedAddonCount .. " protected addons", 0.62, 0.69, 0.76)
     end

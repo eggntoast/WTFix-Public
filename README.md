@@ -12,16 +12,16 @@ WTFix keeps using that saved snapshot until **you** choose to replace it with a 
 
 ## Download
 
-### WTFix 0.9.2
+### WTFix 0.9.3
 
-**[Download WTFix 0.9.2](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.2)**
+**[Download WTFix 0.9.3](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.3)**
 
 ### Windows
 
 | Package | Use |
 | --- | --- |
-| `WTFix-Full-0.9.2.zip` | **Recommended for a fresh Windows installation.** Includes the addon runtime, Windows launcher and preparation components. |
-| `WTFix-Launcher-0.9.2.zip` | For users who already install the WTFix addon/runtime separately, including through CurseForge. |
+| `WTFix-Full-0.9.3.zip` | **Recommended for a fresh Windows installation.** Includes the addon runtime, Windows launcher and preparation components. |
+| `WTFix-Launcher-0.9.3.zip` | For users who already install the WTFix addon/runtime separately, including through CurseForge. |
 
 **[Windows installation guide](docs/installation.md)**
 
@@ -29,8 +29,8 @@ WTFix keeps using that saved snapshot until **you** choose to replace it with a 
 
 | Package | Use |
 | --- | --- |
-| `WTFix-Linux-Full-0.9.2.zip` | Includes the addon runtime, Linux preparation tools and companion. |
-| `WTFix-Linux-Prepare-0.9.2.zip` | Linux preparation tools and companion only, for an existing WTFix runtime installation. |
+| `WTFix-Linux-Full-0.9.3.zip` | Includes the addon runtime, Linux preparation tools and companion. |
+| `WTFix-Linux-Prepare-0.9.3.zip` | Linux preparation tools and companion only, for an existing WTFix runtime installation. |
 
 Linux preparation requires **Python 3.10+**.
 
@@ -40,7 +40,7 @@ Linux preparation uses explicit game-folder and account selection. It does **not
 
 After preparation, start WoW normally through your existing launcher or game manager and verify preparation with `/wtfix status` before using Save or Restore.
 
-SHA256 hashes for the official release packages are listed in the **[WTFix 0.9.2 release notes](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.2)**.
+SHA256 hashes for the official release packages are listed in the **[WTFix 0.9.2 release notes](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.3)**.
 
 > Do **not** use GitHub's automatically generated **Source code** ZIP/TAR files as WTFix installation packages. Use the named WTFix downloads attached to the release.
 
@@ -50,26 +50,15 @@ CurseForge distributes the addon/runtime separately. GitHub provides the complet
 
 ## Updating
 
-### From 0.9.1
+### From 0.9.2
 
-Update the WTFix addon/runtime and the current package for your platform.
+Update the WTFix addon/runtime to 0.9.3.
 
-**Bridge protocol 1 and snapshot schema 1 are unchanged in 0.9.2.**
+Bridge protocol 1 and snapshot schema 1 are unchanged, so existing Windows and Linux preparation remains compatible.
 
-If your existing Windows preparation is healthy, 0.9.2 does not require preparation to be regenerated solely because of this update.
+Some existing Forever characters may be asked once to **Link Character** when WTFix finds more than one compatible saved character record. Choose the saved record you recognize and reload once.
 
-Refresh preparation with WoW closed after:
-
-- installing a new addon that you want WTFix to protect
-- updating an addon whose SavedVariables declarations may have changed
-- adding characters
-- changing the selected WoW installation/account
-- or if WTFix shows **SETUP REQUIRED**
-
-**Windows:** run `WTFix Launcher.cmd`.
-
-**Linux:** rerun the Linux preparation tool for the intended installation/account.
-
+Linking does not Save Snapshot, merge records or replace the trusted checkpoint.
 ### From 0.8.8
 
 Update both the WTFix addon/runtime and current preparation tools.
@@ -207,6 +196,23 @@ If an addon is still missing after successful preparation, use `/wtfix check` an
 
 ---
 
+## WTFix 0.9.3
+
+What's new:
+
+- Fixed cold-login character recognition when Forever exposes the full character name only after addon initialization.
+- Added safe one-time **Character Linking** for ambiguous existing character records.
+- Added GUI record selection with explicit confirmation and **Reload Now / Later** controls.
+- Recognizes full two-part Forever character names while preserving existing short-name checkpoint records.
+- Added clearer **Snapshot ready**, **Link required**, **Reload required**, **Setup required** and **Recovery blocked** states.
+- Added read-only **Recovery Details** and cause-specific setup/problem help.
+- Blocked recovery states now show unavailable information honestly instead of making saved data appear missing.
+
+Character linking does not capture live settings, Save Snapshot or advance the trusted checkpoint generation.
+
+**Bridge protocol 1 and snapshot schema 1 are unchanged.**
+
+---
 ## WTFix 0.9.2
 
 What's new:

@@ -15,7 +15,7 @@ For normal installation, use the packaged downloads from GitHub Releases or Curs
 
 ## Windows packages
 
-### `WTFix-Full-0.9.2.zip`
+### `WTFix-Full-0.9.3.zip`
 
 Contains:
 
@@ -24,7 +24,7 @@ Contains:
 - companion template
 - preparation components
 
-### `WTFix-Launcher-0.9.2.zip`
+### `WTFix-Launcher-0.9.3.zip`
 
 Contains:
 
@@ -36,7 +36,7 @@ It does **not** contain the WTFix runtime.
 
 ## Linux packages
 
-### `WTFix-Linux-Full-0.9.2.zip`
+### `WTFix-Linux-Full-0.9.3.zip`
 
 Contains:
 
@@ -46,7 +46,7 @@ Contains:
 - companion template
 - Linux setup documentation
 
-### `WTFix-Linux-Prepare-0.9.2.zip`
+### `WTFix-Linux-Prepare-0.9.3.zip`
 
 Contains:
 
@@ -59,13 +59,13 @@ It does **not** contain the WTFix runtime.
 
 ## CurseForge package
 
-`WTFix-Addon-0.9.2.zip` contains only the WTFix addon runtime and is used for the CurseForge distribution route.
+`WTFix-Addon-0.9.3.zip` contains only the WTFix addon runtime and is used for the CurseForge distribution route.
 
 Installing the addon alone does not prepare recovery.
 
 ## Current version
 
-Product version: **0.9.2**
+Product version: **0.9.3**
 
 Bridge protocol: **1**
 

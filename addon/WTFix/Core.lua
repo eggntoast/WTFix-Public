@@ -1,6 +1,6 @@
 local addonName, ns = ...
 
-ns.version = "0.9.2"
+ns.version = "0.9.3"
 ns.author = "NS"
 ns.addonName = addonName
 ns.media = "Interface\\AddOns\\WTFix\\Media\\"
@@ -13,12 +13,19 @@ local function safeString(value)
 end
 
 local function ensureConfig()
-    if ns.GetPreparationState().ready and type(ns.diskConfig) == "table" then
+    if ns.GetPreparationState().ready and not ns.configAdopted and type(ns.diskConfig) == "table" then
         -- Keep the table referenced by Broker/UI at file load; adopt verified
         -- configuration only after the own ADDON_LOADED readiness check.
+        local config = ns.diskConfig
+        if ns.CopyRecoveryConfig then
+            local ok, copied = ns.CopyRecoveryConfig()
+            if not ok then return end -- qualification already checked this input
+            config = copied
+        end
         if type(WTFIX_DB) ~= "table" then WTFIX_DB = {} end
         for key in pairs(WTFIX_DB) do WTFIX_DB[key] = nil end
-        for key, value in pairs(ns.diskConfig) do WTFIX_DB[key] = value end
+        for key, value in pairs(config) do WTFIX_DB[key] = value end
+        ns.configAdopted = true
     end
     if type(WTFIX_DB) ~= "table" then
         local bootstrapConfig = type(WTFIX_BOOTSTRAP) == "table" and WTFIX_BOOTSTRAP.config or nil
@@ -37,6 +44,7 @@ ensureConfig()
 ns.EnsureConfig = ensureConfig
 
 function ns.GetCharacterKey()
+    if ns.ObservePlayerIdentity then return ns.GetPreparationState().checkpointKey end
     local name = UnitName and UnitName("player") or nil
     if not name or name == "" then return nil end
     local realmID = GetRealmID and GetRealmID() or nil
@@ -134,6 +142,10 @@ SlashCmdList.WTFIX = function(message)
         if ns.PrintStatus then ns.PrintStatus() else ns.Print("status is not ready yet") end
         return
     end
+    if message == "bind" or message:match("^bind%s") then
+        ns.PrintCharacterLink(message:match("^bind%s+(.+)$"))
+        return
+    end
     if message == "diff" then
         if ns.PrintDifferences then ns.PrintDifferences() else ns.Print("comparison is not ready yet") end
         return
@@ -146,5 +158,5 @@ SlashCmdList.WTFIX = function(message)
         if ns.SettingsCompat and ns.SettingsCompat.Toggle then ns.SettingsCompat.Toggle() else ns.Print("settings are not ready yet") end
         return
     end
-    ns.Print("use /wtfix, /wtfix status, /wtfix diff or /wtfix check")
+    ns.Print("use /wtfix, /wtfix status, /wtfix diff, /wtfix check or /wtfix bind")
 end

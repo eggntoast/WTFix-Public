@@ -256,6 +256,7 @@ function ns.UI_CreateToggle(parent, labelText, initial, width, height)
     label:SetText(labelText or "")
     colorText(label, C.text)
 
+    button.__enabled = true
     button.__checked = initial and true or false
     button.__box = box
     button.__mark = mark
@@ -277,11 +278,18 @@ function ns.UI_CreateToggle(parent, labelText, initial, width, height)
         T.SetColorTexture(self.__right, borderColor)
     end
 
+    function button:SetEnabledState(enabled)
+        self.__enabled = enabled and true or false
+        self:EnableMouse(self.__enabled)
+        self:SetAlpha(self.__enabled and 1 or 0.5)
+    end
+
     function button:GetChecked()
         return self.__checked
     end
 
     button:SetScript("OnEnter", function(self)
+        if not self.__enabled then return end
         T.SetColorTexture(self.__box, C.buttonHover)
         colorText(self.__label, C.accentBright)
     end)
@@ -290,6 +298,7 @@ function ns.UI_CreateToggle(parent, labelText, initial, width, height)
         colorText(self.__label, C.text)
     end)
     button:SetScript("OnClick", function(self)
+        if not self.__enabled then return end
         self:SetChecked(not self:GetChecked())
         if self.OnValueChanged then self:OnValueChanged(self:GetChecked()) end
     end)

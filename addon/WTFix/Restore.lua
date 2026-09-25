@@ -106,14 +106,23 @@ local function restoreProtectedState()
         end
     end
 
+    ns.recoveryPerformed = true
     ns.restoreStats = stats
     ns.bootstrapGenerated = bootstrap.generated == true
 end
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
+frame:RegisterEvent("PLAYER_LOGIN")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self, event, loadedAddon)
+    if event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD" then
+        self:UnregisterEvent(event)
+        if ns.CheckIdentityAtLogin then ns.CheckIdentityAtLogin() end
+        return
+    end
     if event ~= "ADDON_LOADED" or loadedAddon ~= addonName then return end
     self:UnregisterEvent("ADDON_LOADED")
     restoreProtectedState()
+    ns.recoveryWindowClosed = true
 end)

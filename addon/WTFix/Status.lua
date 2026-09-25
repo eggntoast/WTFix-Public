@@ -139,6 +139,12 @@ function ns.GetStatusPresentation(checkLive)
     local summary = ns.GetStatusSummary(checkLive)
 
     if summary.state == "SETUP_REQUIRED" then
+        local code = ns.GetPreparationState().code
+        local labels = {IDENTITY_PENDING="Waiting for character", LINK_REQUIRED="Link character", RELOAD_REQUIRED="Reload required"}
+        if labels[code] then
+            return {state=code, label=labels[code], kind="warning", compact=code == "RELOAD_REQUIRED" and "Character link" or "/wtfix bind",
+                detail=ns.GetPreparationState().reason, summary=summary, warningDetails=summary.warningDetails}
+        end
         return { state="SETUP_REQUIRED", label="SETUP REQUIRED", kind="danger", compact="Run setup",
             detail=ns.GetPreparationState().reason, summary=summary, warningDetails=summary.warningDetails }
     end
@@ -215,18 +221,38 @@ function ns.GetStatusPresentation(checkLive)
     }
 end
 
+function ns.GetColdStartLabel()
+    local p = ns.GetPreparationState()
+    if not p.ready then return ns.GetStatusPresentation(false).label end
+    if p.identity and p.identity.guid and not p.characterLinked then return "Link character: /wtfix bind" end
+    return "Ready"
+end
+
 function ns.PrintStatus()
     local presentation = ns.GetStatusPresentation(true)
     local s = presentation.summary
     ns.Print(ns.version)
     ns.Print("Status: " .. presentation.label .. " • " .. presentation.compact)
     ns.Print("Preparation: " .. ns.GetPreparationState().reason)
-    ns.Print("Last saved: " .. s.lastSaved)
-    ns.Print("Protected addons: " .. s.protectedAddons)
+    local preparation = ns.GetPreparationState()
+    if preparation.identity then
+        ns.Print("Identity source: " .. tostring(preparation.identity.source or "verified-name"))
+    end
+    if preparation.checkpointKey then
+        ns.Print("Checkpoint key: " .. preparation.checkpointKey:gsub("|", "||"):gsub("[%c]", "?"))
+    end
+    ns.Print("Recovery applied this session: " .. (ns.recoveryPerformed and "yes" or "no"))
+    local view = ns.GetRecoveryView and ns.GetRecoveryView(false)
+    ns.Print("Last saved: " .. (view and view.saved or s.lastSaved))
+    ns.Print((view and view.countLabel or "Protected addons") .. ": " .. (view and view.count or s.protectedAddons))
     if s.unloadedAddonCount > 0 then ns.Print("Not loaded: " .. s.unloadedAddonCount .. " protected addons; existing data retained, no live capture. /wtfix check lists them.") end
     ns.Print("Recovery source: " .. tostring(s.source))
-    ns.Print("Snapshot generation: " .. tostring(s.snapshotGeneration)
-        .. " (restored " .. tostring(ns.restoreStats and ns.restoreStats.snapshotGeneration or 0) .. ")")
+    if not preparation.ready then
+        ns.Print("Snapshot generation: — (not qualified; saved records may still exist)")
+    else
+        ns.Print("Snapshot generation: " .. tostring(s.snapshotGeneration)
+            .. " (restored " .. tostring(ns.restoreStats and ns.restoreStats.snapshotGeneration or 0) .. ")")
+    end
     ns.Print("Native at file load: " .. tostring(ns.nativeSnapshotAtFileLoad))
     ns.Print("Native config at file load: " .. tostring(ns.nativeConfigAtFileLoad))
     ns.Print("Native at recovery: " .. tostring(ns.nativeSnapshotAtRestore))
@@ -235,7 +261,7 @@ function ns.PrintStatus()
     if WTFIX_BOOTSTRAP and WTFIX_BOOTSTRAP.snapshotFile then
         ns.Print("Bootstrap snapshot file: " .. WTFIX_BOOTSTRAP.snapshotFile)
     end
-    ns.Print("Cold-start recovery: " .. (ns.GetPreparationState().ready and "Ready" or "SETUP REQUIRED"))
+    ns.Print("Cold-start recovery: " .. ns.GetColdStartLabel())
     if s.differences and s.differences.addonCount > 0 then
         ns.Print("Live data differs in " .. plural(s.differences.addonCount, "addon") .. ". This may be settings or runtime data; /wtfix diff lists the variables.")
     end

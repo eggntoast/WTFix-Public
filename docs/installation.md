@@ -1,6 +1,6 @@
 # Installation and setup
 
-WTFix 0.9.2 supports recovery preparation on Windows and Linux.
+WTFix 0.9.3 supports recovery preparation on Windows and Linux.
 
 This page covers the **Windows** installation workflow.
 
@@ -10,7 +10,7 @@ Before installation or an upgrade, close WoW and keep an independent backup of y
 
 ## Route A: install everything from GitHub
 
-1. Download `WTFix-Full-0.9.2.zip` from the current GitHub release.
+1. Download `WTFix-Full-0.9.3.zip` from the current GitHub release.
 2. Extract the entire ZIP into a normal folder outside WoW's AddOns directory. Keep all extracted files together; do not run directly inside the ZIP.
 3. With WoW closed, run `WTFix Launcher.cmd`.
 4. Confirm the correct Forever installation and account when prompted. If no account/character folder exists yet, log into that character once, exit WoW, and run preparation again.
@@ -23,7 +23,7 @@ Full installs the runtime only when `Interface/AddOns/WTFix` is absent. It prese
 ## Route B: CurseForge addon plus Windows Launcher
 
 1. Install or update the WTFix runtime through CurseForge.
-2. Download and fully extract `WTFix-Launcher-0.9.2.zip` from GitHub.
+2. Download and fully extract `WTFix-Launcher-0.9.3.zip` from GitHub.
 3. Close WoW.
 4. Run `WTFix Launcher.cmd`.
 5. Require successful backup and disk-bridge preparation.
@@ -35,9 +35,9 @@ The Launcher package contains no runtime. Installing the CurseForge addon by its
 
 Update the WTFix runtime and the current Windows package.
 
-Bridge protocol 1 and snapshot schema 1 are unchanged in 0.9.2.
+Bridge protocol 1 and snapshot schema 1 are unchanged in 0.9.3.
 
-If your existing preparation is healthy, preparation does not need to be regenerated solely because of the 0.9.2 update.
+If your existing preparation is healthy, preparation does not need to be regenerated solely because of the 0.9.3 update.
 
 Run preparation again with WoW closed after:
 
@@ -51,8 +51,8 @@ Run preparation again with WoW closed after:
 
 If you are updating directly from 0.8.8:
 
-1. Update or install the current 0.9.2 WTFix runtime.
-2. Replace the old launcher files with the current 0.9.2 launcher.
+1. Update or install the current 0.9.3 WTFix runtime.
+2. Replace the old launcher files with the current 0.9.3 launcher.
 3. Close WoW completely.
 4. Run the current `WTFix Launcher.cmd` once.
 5. Require successful preparation.

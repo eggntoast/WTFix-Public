@@ -159,17 +159,24 @@ function ns.GetBootstrapSnapshot()
     return nil
 end
 
-function ns.GetAuthoritativeSnapshot()
-    if not ns.GetPreparationState().ready then return nil, "none" end
+function ns.SelectRecoverySnapshot(native, disk, bootstrap)
     -- Current in-memory/native wins ties, then the fresh disk read, then the
     -- static launcher copy. Save can therefore advance beyond both inputs.
-    local winner, source = ns.GetNativeSnapshot(), "native"
-    local disk = ns.IsSnapshotValid(ns.diskSnapshot) and ns.diskSnapshot or nil
+    local winner, source = ns.IsSnapshotValid(native) and native or nil, "native"
+    disk = ns.IsSnapshotValid(disk) and disk or nil
     if disk and (not winner or disk.generation > winner.generation) then winner, source = disk, "disk" end
-    local bootstrap = ns.GetBootstrapSnapshot()
+    bootstrap = ns.IsSnapshotValid(bootstrap) and bootstrap or nil
     if bootstrap and (not winner or bootstrap.generation > winner.generation) then winner, source = bootstrap, "bootstrap" end
     return winner, winner and source or "none"
 end
+
+function ns.GetAuthoritativeSnapshot()
+    if not ns.GetPreparationState().ready then return nil, "none" end
+    return ns.SelectRecoverySnapshot(WTFIX_SNAPSHOT_DB, ns.diskSnapshot, ns.GetBootstrapSnapshot())
+end
+
+-- Used only on strictly copied, bounded checkpoint data for link confirmation.
+function ns.CheckpointDataEqual(a, b) return firstDifference(a, b, "checkpoint") == nil end
 
 local function copyManifest()
     local manifest = {}
@@ -307,6 +314,7 @@ function ns.SaveCurrentSettings()
         return false, ns.lastSaveResult, "snapshot was not saved because the complete checkpoint exceeds safe restore limits: " .. tostring(err)
     end
     WTFIX_SNAPSHOT_DB = committed
+    if ns.NoteCharacterCheckpointSaved then ns.NoteCharacterCheckpointSaved(characterKey) end
     return true, ns.lastSaveResult
 end
 

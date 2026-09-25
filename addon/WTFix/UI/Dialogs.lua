@@ -7,6 +7,7 @@ local overlay = CreateFrame("Frame", "WTFixConfirmOverlay", UIParent)
 overlay:SetAllPoints()
 overlay:SetFrameStrata("DIALOG")
 overlay:SetFrameLevel(900)
+overlay:EnableMouse(true)
 overlay:Hide()
 
 local shade = overlay:CreateTexture(nil, "BACKGROUND")
@@ -93,12 +94,16 @@ reloadButton:Hide()
 
 local callback
 local mode = "confirm"
+local customContent
+local keyHandler
 
 local function inCombat()
     return InCombatLockdown and InCombatLockdown()
 end
 
 local function restoreConfirmButtons()
+    confirm:SetWidth(150)
+    confirm:SetEnabledState(true)
     confirm:ClearAllPoints()
     confirm:SetPoint("BOTTOMRIGHT", -20, 18)
     cancel:ClearAllPoints()
@@ -106,6 +111,13 @@ local function restoreConfirmButtons()
     cancel:SetButtonText("Cancel")
     confirm:Show()
     cancel:Show()
+end
+
+local function resetDialog()
+    if customContent then customContent:Hide() end
+    keyHandler = nil
+    dialog:SetSize(430, 220)
+    body:Show()
 end
 
 cancel:SetScript("OnClick", function()
@@ -125,7 +137,21 @@ cancel:SetScript("OnClick", function()
     overlay:Hide()
 end)
 
+function ns.CloseRecoveryDialog()
+    local fn = cancel:GetScript("OnClick")
+    if fn then fn() end
+end
+overlay:EnableKeyboard(true)
+overlay:SetPropagateKeyboardInput(true)
+overlay:SetScript("OnKeyDown", function(self, key)
+    local handled = false
+    if key == "ESCAPE" then ns.CloseRecoveryDialog(); handled = true
+    elseif keyHandler then handled = keyHandler(key) == true end
+    self:SetPropagateKeyboardInput(not handled)
+end)
+
 confirm:SetScript("OnClick", function()
+    if not confirm.__enabled then return end
     local fn = callback
     callback = nil
     overlay:Hide()
@@ -133,6 +159,8 @@ confirm:SetScript("OnClick", function()
 end)
 
 function ns.ShowConfirm(dialogTitle, dialogBody, confirmText, fn)
+    if reloadButton:IsShown() and inCombat() then return false end
+    resetDialog()
     if reloadButton:IsShown() and not inCombat() then
         reloadButton:Hide()
     end
@@ -151,6 +179,8 @@ function ns.ShowReloadRequired(reloadMode)
         return false
     end
 
+    resetDialog()
+
     callback = nil
     mode = "reload"
     confirm:Hide()
@@ -159,7 +189,10 @@ function ns.ShowReloadRequired(reloadMode)
     cancel:SetButtonText("Later")
     cancel:Show()
 
-    if reloadMode == "restore" then
+    if reloadMode == "identity" then
+        title:SetText("Character Linked — Reload Required")
+        body:SetText("Reload once to apply your saved settings before protected addons initialize. This can replace unsaved addon changes. Linking did not save current settings or apply recovery. Choose Later to continue with recovery pending.")
+    elseif reloadMode == "restore" then
         title:SetText("Reload to Restore")
         body:SetText("WTFix is ready to restore your protected snapshot. Reload now to discard current unsaved addon changes and apply the snapshot during addon startup.")
     else
@@ -173,3 +206,37 @@ function ns.ShowReloadRequired(reloadMode)
 end
 
 ns.SecureReloadButton = reloadButton
+
+-- Reuse the same modal surface for read-only help/details and record selection.
+-- The secure reload button retains its original separate frame and fixed setup.
+function ns.ShowRecoverySheet(dialogTitle, content, primaryText, fn, onKey)
+    if reloadButton:IsShown() and inCombat() then
+        ns.Print("Leave combat before changing the reload prompt."); return false
+    end
+    if reloadButton:IsShown() then reloadButton:Hide() end
+    resetDialog()
+    mode = "sheet"
+    customContent, keyHandler = content, onKey
+    dialog:SetSize(math.max(300, math.min(520, UIParent:GetWidth()-40)), math.max(260, math.min(470, UIParent:GetHeight()-60)))
+    title:SetText(dialogTitle)
+    body:Hide()
+    restoreConfirmButtons()
+    confirm:SetWidth(190)
+    confirm:SetButtonText(primaryText or "")
+    confirm:SetShown(primaryText ~= nil)
+    confirm:SetEnabledState(fn ~= nil)
+    cancel:SetButtonText(primaryText and "Cancel" or "Close")
+    local stacked = primaryText and dialog:GetWidth() < 400
+    content:SetPoint("BOTTOMRIGHT", -20, stacked and 102 or 64)
+    if stacked then
+        confirm:ClearAllPoints(); confirm:SetPoint("BOTTOMRIGHT", -20, 54)
+        confirm:SetWidth(dialog:GetWidth()-40)
+        cancel:ClearAllPoints(); cancel:SetPoint("BOTTOMRIGHT", -20, 14)
+    end
+    if not primaryText then cancel:ClearAllPoints(); cancel:SetPoint("BOTTOMRIGHT", -20, 18) end
+    callback = fn
+    content:Show()
+    overlay:Show()
+    return true
+end
+ns.RecoveryDialogHost = {dialog=dialog, overlay=overlay, confirm=confirm, cancel=cancel}

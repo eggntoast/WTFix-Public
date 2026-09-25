@@ -46,7 +46,7 @@ This prevents new encoding corruption. It cannot reconstruct data already corrup
 
 Product version, bridge protocol and snapshot schema are separate contracts.
 
-WTFix 0.9.2 continues to use:
+WTFix 0.9.3 continues to use:
 
 - bridge protocol **1**
 - snapshot schema **1**
@@ -107,6 +107,6 @@ or, when `XDG_STATE_HOME` is unset:
 
 `~/.local/state/wtfix`
 
-Linux 0.9.2 does not include an automatic uninstall workflow. See the [Linux installation and preparation guide](linux-preparation.md) before changing prepared files manually.
+Linux 0.9.3 does not include an automatic uninstall workflow. See the [Linux installation and preparation guide](linux-preparation.md) before changing prepared files manually.
 
 Review logs, backups and SavedVariables before sharing them publicly because they may contain personal paths or addon data.
