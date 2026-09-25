@@ -110,5 +110,5 @@ body:
       options:
         - label: I reviewed the diagnostics for personal information before posting them publicly.
           required: true
-        - label: I preserved the existing recovery data instead of deleting SavedVariables as a generic workaround.
+        - label: I understand that deleting SavedVariables is not a normal WTFix troubleshooting step.
           required: true
