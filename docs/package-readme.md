@@ -95,7 +95,7 @@ problem. The About page provides a copyable Report a Bug link.
 
 [Report a bug](https://github.com/eggntoast/WTFix-Public/issues)
 
-See the included [changelog](CHANGELOG.md) for release changes.
+See the included `CHANGELOG.md` for release changes.
 
 ## Character linking after an update
 
