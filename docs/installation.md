@@ -22,7 +22,7 @@ Full installs the runtime only when `Interface/AddOns/WTFix` is absent. It prese
 
 ## Route B: CurseForge addon plus Windows Launcher
 
-1. Install or update the WTFix runtime through CurseForge.
+1. Install or update the WTFix runtime through [CurseForge](https://www.curseforge.com/wow/addons/wtfix).
 2. Download and fully extract `WTFix-Launcher-0.9.3.zip` from GitHub.
 3. Close WoW.
 4. Run `WTFix Launcher.cmd`.
@@ -31,13 +31,14 @@ Full installs the runtime only when `Interface/AddOns/WTFix` is absent. It prese
 
 The Launcher package contains no runtime. Installing the CurseForge addon by itself does not prepare recovery.
 
-## Updating from 0.9.2
+## Updating from 0.9.0, 0.9.1 or 0.9.2
 
 Update the WTFix runtime and the current Windows package.
 
 Bridge protocol 1 and snapshot schema 1 are unchanged in 0.9.3.
 
-If your existing preparation is healthy, preparation does not need to be regenerated solely because of the 0.9.3 update.
+If your existing preparation is healthy, Windows preparation from 0.9.0 or later does not need to be regenerated solely because of the 0.9.3 update. Linux preparation was introduced in 0.9.2 and remains compatible.
+
 After updating, some existing Forever characters may show **Link required** once. Click **Link Character**, select the saved character record you recognize, confirm the link, then reload once. Linking does not Save Snapshot, merge character records or advance the trusted checkpoint generation.
 
 Run preparation again with WoW closed after:

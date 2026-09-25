@@ -16,6 +16,8 @@ WTFix keeps using that saved snapshot until **you** choose to replace it with a 
 
 **[Download WTFix 0.9.3](https://github.com/eggntoast/WTFix-Public/releases/tag/v0.9.3)**
 
+**[WTFix on CurseForge](https://www.curseforge.com/wow/addons/wtfix)** — addon/runtime distribution for WoW Forever.
+
 ### Windows
 
 | Package | Use |
@@ -50,11 +52,13 @@ CurseForge distributes the addon/runtime separately. GitHub provides the complet
 
 ## Updating
 
-### From 0.9.2
+### From 0.9.0, 0.9.1 or 0.9.2
 
 Update the WTFix addon/runtime to 0.9.3.
 
-Bridge protocol 1 and snapshot schema 1 are unchanged, so existing Windows and Linux preparation remains compatible.
+If you keep a local Windows launcher/preparation package, update that package as well so any future preparation uses the current tools.
+
+Bridge protocol 1 and snapshot schema 1 are unchanged. Healthy Windows preparation from 0.9.0 or later remains compatible, and Linux preparation from 0.9.2 remains compatible. Preparation does not need to be regenerated solely because of the 0.9.3 update.
 
 Some existing Forever characters may be asked once to **Link Character** when WTFix finds more than one compatible saved character record. Choose the saved record you recognize and reload once.
 
@@ -362,6 +366,7 @@ This explicit adoption boundary is intentional.
 - [Troubleshooting](docs/troubleshooting.md)
 - [Source layout](docs/source-layout.md)
 - [Licenses & third-party notices](docs/licenses.md)
+- [Contributing](CONTRIBUTING.md)
 
 ---
 

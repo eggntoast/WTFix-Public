@@ -1,0 +1,114 @@
+name: Bug report
+description: Report a WTFix recovery, setup, Save/Restore or compatibility problem
+title: "[Bug] "
+labels: []
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a WTFix problem. Please preserve the existing recovery data while investigating. Do not delete SavedVariables or create a replacement snapshot just to clear an error.
+
+  - type: input
+    id: version
+    attributes:
+      label: WTFix version
+      description: Example: 0.9.3
+      placeholder: 0.9.3
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Windows
+        - Linux
+        - macOS / community port
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: package
+    attributes:
+      label: Package / installation route
+      description: Example: Full, Launcher + CurseForge, Linux Full, Linux Prepare, or addon only
+      placeholder: Launcher + CurseForge
+    validations:
+      required: true
+
+  - type: input
+    id: client
+    attributes:
+      label: WoW Forever client/build
+      description: Include the client build or Interface version if known.
+      placeholder: Interface 16001 / build ...
+    validations:
+      required: false
+
+  - type: input
+    id: addon
+    attributes:
+      label: Affected addon and version
+      description: Leave blank if the problem is not specific to another addon.
+      placeholder: Addon name + version
+    validations:
+      required: false
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the observed result and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Give the shortest exact sequence that reproduces the problem.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: status
+    attributes:
+      label: /wtfix status
+      description: Paste the complete output after reviewing it for personal information.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: check
+    attributes:
+      label: /wtfix check
+      description: For Save/capture problems, paste the complete output after reviewing it for personal information. Otherwise write "not applicable".
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add screenshots or other details that help explain the problem. Do not post full SavedVariables, recovery archives or unreviewed logs.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Before submitting
+      options:
+        - label: I reviewed the diagnostics for personal information before posting them publicly.
+          required: true
+        - label: I preserved the existing recovery data instead of deleting SavedVariables as a generic workaround.
+          required: true
