@@ -366,7 +366,6 @@ This explicit adoption boundary is intentional.
 - [Troubleshooting](docs/troubleshooting.md)
 - [Source layout](docs/source-layout.md)
 - [Licenses & third-party notices](docs/licenses.md)
-- [Contributing](CONTRIBUTING.md)
 
 ---
 
