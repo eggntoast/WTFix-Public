@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> **Historical documentation — WTFix is retired.**
+>
+> Blizzard fixed the WoW Forever SavedVariables persistence bug that WTFix 0.9.3 was created to work around. This document is retained for existing installations and historical/reference use only. WTFix is no longer recommended for current Forever builds. See the [project README](../README.md).
+
 # WTFix 0.9.3
 
 SavedVariables recovery for WoW Forever.

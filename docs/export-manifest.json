@@ -6,7 +6,7 @@
     "repository": "eggntoast/WTFix",
     "commit": "2dd7d9987d6997e7359ad42eccb0f8604c1dd6ce"
   },
-  "status": "public source export for WTFix 0.9.3",
+  "status": "retired public source export for WTFix 0.9.3; implementation preserved for historical/reference use",
   "implementation_files": [
     {
       "private_path": "AddOn/WTFix/Broker.lua",
